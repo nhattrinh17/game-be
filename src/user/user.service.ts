@@ -77,7 +77,7 @@ export class UserService {
   }
 
   findOne(id: string) {
-    return this, this.userModel.findOne({ where: { id }, attributes: ['id', 'email', 'username', 'name', 'phone', 'status', 'gender', 'avatar'] });
+    return this, this.userModel.findOne({ where: { id }, attributes: ['id', 'email', 'username', 'name', 'phone', 'status', 'avatar'] });
   }
 
   // update(id: number, updateUserDto: UpdateUserDto) {

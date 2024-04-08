@@ -5,11 +5,15 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators';
 import { CreateAuthDto, LoginDto, RefreshTokenDto } from './dto/create-auth.dto';
 import { ConfirmAccountDto } from './dto/update-auth.dto';
+import { UserService } from 'src/user/user.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @Public()
   @Post('login')
@@ -21,7 +25,7 @@ export class AuthController {
   @Get('userInfo')
   @ApiOperationCustom('Login', 'post')
   userInfo(@Req() req) {
-    return req['user'];
+    return this.userService.findOne(req['user'].id);
   }
 
   @Public()
