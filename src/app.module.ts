@@ -19,6 +19,7 @@ import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { GroupModule } from './group/group.module';
 import { PermissionActionModule } from './permission-action/permission-action.module';
+import { GameTypeModule } from './game-type/game-type.module';
 
 console.log(__dirname);
 @Module({
@@ -98,6 +99,7 @@ console.log(__dirname);
     UploadModule,
     GroupModule,
     PermissionActionModule,
+    GameTypeModule,
   ],
   providers: [
     //

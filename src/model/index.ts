@@ -5,6 +5,7 @@ export * from './permission-action.model';
 export * from './permission-service.model';
 export * from './permission-category.model';
 export * from './group.model';
+export * from './game-type.model';
 
 export const addConditionNotDelete = (options: any) => {
   if (!options.where) {
