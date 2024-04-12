@@ -7,6 +7,8 @@ export * from './permission-category.model';
 export * from './group.model';
 export * from './game-type.model';
 export * from './payment-type.model';
+export * from './banking.model';
+export * from './payment.model';
 
 export const addConditionNotDelete = (options: any) => {
   if (!options.where) {
