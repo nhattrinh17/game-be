@@ -4,23 +4,25 @@ import { Status } from 'src/constants';
 import { addConditionNotDelete } from '.';
 
 @Table({
-  tableName: 'GameTypes',
+  tableName: 'Banks',
   timestamps: true,
   indexes: [{ name: 'name_index', fields: ['name'] }],
 })
-export class GameTypeModel extends Model {
+export class BanksModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
   id: number;
 
-  //   @ForeignKey(() => GroupModel)
   @Column({ type: DataType.STRING })
-  name: string;
+  nameBank: string;
 
   @Column({ type: DataType.STRING })
-  slug: string;
+  branch: string;
+
+  @Column({ type: DataType.STRING })
+  accountOwner: string;
 
   @Column({ type: DataType.STRING, defaultValue: Status.Active })
-  status: string;
+  accountNumber: string;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDeleted: boolean;
