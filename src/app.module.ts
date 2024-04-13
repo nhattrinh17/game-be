@@ -23,6 +23,8 @@ import { GameTypeModule } from './game-type/game-type.module';
 import { PaymentTypeModule } from './payment-type/payment-type.module';
 import { PaymentModule } from './payment/payment.module';
 import { BankModule } from './bank/bank.module';
+import { GameModule } from './game/game.module';
+import { PermissionGuard } from './auth/guards/permission.guard';
 
 console.log(__dirname);
 @Module({
@@ -103,6 +105,7 @@ console.log(__dirname);
     GroupModule,
     PermissionActionModule,
     GameTypeModule,
+    GameModule,
     PaymentTypeModule,
     PaymentModule,
     BankModule,
@@ -112,6 +115,7 @@ console.log(__dirname);
     FirebaseService,
     RedisService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: PermissionGuard },
     SendMailService,
   ],
 })

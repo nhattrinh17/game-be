@@ -3,6 +3,9 @@ export const messageResponse = {
     badRequest: 'bad_request',
     emailNotInvalid: 'email_invalid',
     phoneNumberInvalid: 'phone_number_invalid',
+    missingData: 'missing_data',
+    notFound: 'not_found',
+    duplicateData: 'duplicate_data',
   },
   auth: {
     userNotFound: 'user_not_found',

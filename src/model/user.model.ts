@@ -1,6 +1,6 @@
 import { BeforeCount, BeforeFind, BeforeSave, Column, Model, Table } from 'sequelize-typescript';
 import { DataType } from 'sequelize-typescript';
-import { Status } from 'src/constants';
+import { Status, TypeUser } from 'src/constants';
 import { addConditionNotDelete } from '.';
 
 @Table({
@@ -44,6 +44,9 @@ export class UserModel extends Model {
 
   @Column({ type: DataType.STRING })
   avatar: string;
+
+  @Column({ type: DataType.STRING, defaultValue: TypeUser.Normal })
+  typeUser: string;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: true })
   confirmAccount: boolean;
