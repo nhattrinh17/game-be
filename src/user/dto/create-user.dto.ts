@@ -34,7 +34,7 @@ export class CreateUserDto {
   @ApiProperty({ name: 'status', description: 'Trạng thái' })
   status?: string;
 
-  @IsString()
+  // @IsString()
   @ApiProperty({ name: 'code', description: 'Code' })
   code?: string;
 

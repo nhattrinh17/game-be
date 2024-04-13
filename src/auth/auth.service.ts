@@ -94,6 +94,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       status: user.status,
+      typeUser: user.typeUser,
     };
     return {
       access_token: await this.generateAccessToken(payloadAccessToken),

@@ -20,6 +20,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { GroupModule } from './group/group.module';
 import { PermissionActionModule } from './permission-action/permission-action.module';
 import { GameTypeModule } from './game-type/game-type.module';
+import { GameModule } from './game/game.module';
+import { PermissionGuard } from './auth/guards/permission.guard';
 
 console.log(__dirname);
 @Module({
@@ -100,12 +102,14 @@ console.log(__dirname);
     GroupModule,
     PermissionActionModule,
     GameTypeModule,
+    GameModule,
   ],
   providers: [
     //
     FirebaseService,
     RedisService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: PermissionGuard },
     SendMailService,
   ],
 })

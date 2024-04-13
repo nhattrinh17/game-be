@@ -19,6 +19,11 @@ export enum CreateCategoryKind {
   Blog = 'blog',
 }
 
+export const TypeUser = {
+  Normal: 'Normal',
+  Admin: 'Admin-CMS',
+};
+
 export const TypePermissionCategory = {
   Single: 'SINGLE',
   Multilevel: 'MUlTILEVEL',

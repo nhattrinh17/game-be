@@ -32,7 +32,7 @@ export abstract class BaseRepositoryAbstract<T extends Model> implements BaseRep
         //
         where: condition,
         attributes: options?.projection,
-        order: options?.sort ? [options?.sort, 'DESC'] : ['id', 'DESC'],
+        order: [options?.sort ? [options?.sort, 'DESC'] : ['id', 'DESC']],
         offset: options?.offset,
         limit: options?.limit,
       }),
