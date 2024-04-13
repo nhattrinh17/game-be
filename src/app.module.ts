@@ -20,6 +20,9 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { GroupModule } from './group/group.module';
 import { PermissionActionModule } from './permission-action/permission-action.module';
 import { GameTypeModule } from './game-type/game-type.module';
+import { PaymentTypeModule } from './payment-type/payment-type.module';
+import { PaymentModule } from './payment/payment.module';
+import { BankModule } from './bank/bank.module';
 import { GameModule } from './game/game.module';
 import { PermissionGuard } from './auth/guards/permission.guard';
 
@@ -103,6 +106,9 @@ console.log(__dirname);
     PermissionActionModule,
     GameTypeModule,
     GameModule,
+    PaymentTypeModule,
+    PaymentModule,
+    BankModule,
   ],
   providers: [
     //
