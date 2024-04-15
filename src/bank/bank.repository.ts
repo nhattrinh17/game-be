@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { BanksModel } from 'src/model';
 import { BaseRepositoryAbstract } from 'src/repositories/base/base.abstract.repository';
-import { BaseRepositoryInterface } from 'src/repositories/base/base.interface.repository';
+import { BankRepositoryInterface } from './bank.interface';
 
 @Injectable()
-export class GameTypeRepository extends BaseRepositoryAbstract<BanksModel> implements BaseRepositoryInterface<BanksModel> {
+export class BankRepository extends BaseRepositoryAbstract<BanksModel> implements BankRepositoryInterface {
   constructor(@InjectModel(BanksModel) private readonly bankModel: typeof BanksModel) {
     super(bankModel);
   }

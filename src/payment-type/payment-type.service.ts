@@ -34,6 +34,10 @@ export class PaymentTypeService {
     return this.payment_type_repository.findOneById(id, ['name, status', 'minimum', 'maximum']);
   }
 
+  checkExit(id: number) {
+    return this.payment_type_repository.count({ id });
+  }
+
   async update(id: number, dto: UpdatePaymentTypeDto) {
     const update = await this.payment_type_repository.findByIdAndUpdate(id, dto);
     if (!update) throw Error(messageResponse.system.badRequest);

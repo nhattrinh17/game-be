@@ -6,6 +6,7 @@ export const messageResponse = {
     missingData: 'missing_data',
     notFound: 'not_found',
     duplicateData: 'duplicate_data',
+    idInvalid: 'id_invalid',
   },
   auth: {
     userNotFound: 'user_not_found',
@@ -44,5 +45,10 @@ export const messageResponse = {
     notFound: 'group_not_found',
     missingData: 'missing_data',
     duplicate: 'duplicate_group',
+  },
+  payment: {
+    paymentTypeIdNotFound: 'payment_type_not_found',
+    bankNotFound: 'bank_not_found',
+    bankHasExist: 'bank_has_exist',
   },
 };

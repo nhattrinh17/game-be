@@ -15,6 +15,9 @@ export class BanksModel extends Model {
   @Column({ type: DataType.STRING })
   nameBank: string;
 
+  @Column({ type: DataType.INTEGER })
+  binBank: number;
+
   @Column({ type: DataType.STRING })
   branch: string;
 

@@ -1,30 +1,38 @@
-import { BeforeCount, BeforeFind, Column, Model, Table } from 'sequelize-typescript';
+import { BeforeCount, BeforeFind, BelongsTo, Column, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { DataType } from 'sequelize-typescript';
 import { Status } from 'src/constants';
-import { addConditionNotDelete } from '.';
+import { BanksModel, PaymentTypeModel, addConditionNotDelete } from '.';
 
 @Table({
   tableName: 'Payment',
   timestamps: true,
-  indexes: [{ name: 'name_index', fields: ['name'] }],
+  indexes: [
+    { name: 'name_index', fields: ['name'] },
+    { name: 'slug_index', fields: ['slug'] },
+  ],
 })
 export class PaymentModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
   id: number;
 
-  @Column({ type: DataType.STRING })
-  name: string;
+  @ForeignKey(() => PaymentTypeModel)
+  @Column
+  paymentTypeId: number;
+
+  @BelongsTo(() => PaymentTypeModel)
+  paymentType: PaymentTypeModel;
 
   @Column({ type: DataType.STRING })
-  image: string;
+  methodName: string;
+
+  @Column({ type: DataType.STRING })
+  methodImage: string;
 
   @Column({ type: DataType.STRING })
   nameWarning: string;
 
   @Column({ type: DataType.STRING, defaultValue: Status.Active })
   status: string;
-
-  //   @
 
   @Column({ type: DataType.STRING })
   slug: string;
@@ -34,6 +42,12 @@ export class PaymentModel extends Model {
 
   @Column({ type: DataType.INTEGER })
   maximum: number;
+
+  @Column({ type: DataType.ARRAY(DataType.INTEGER), allowNull: true })
+  bankIds: number[]; // Store array banks
+
+  @HasMany(() => BanksModel, 'id')
+  banks: BanksModel[];
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDeleted: boolean;

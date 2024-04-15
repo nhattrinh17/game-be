@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
+import { BankRepositoryInterface } from './bank.interface';
+import { Op } from 'sequelize';
+import { Pagination } from 'src/middlewares';
+import { binBanks, messageResponse } from 'src/constants';
 
 @Injectable()
 export class BankService {
-  create(createBankDto: CreateBankDto) {
-    return 'This action adds a new bank';
+  constructor(
+    @Inject('BankRepositoryInterface')
+    private readonly bankRepository: BankRepositoryInterface,
+  ) {}
+
+  create(dto: CreateBankDto) {
+    if (!dto.accountNumber || !dto.binBank || !dto.accountOwner || !dto.branch || !dto.nameBank) throw Error(messageResponse.system.missingData);
+    if (!binBanks[dto.binBank]) throw new Error(messageResponse.system.badRequest);
+    return this.bankRepository.create(dto);
   }
 
-  findAll() {
-    return `This action returns all bank`;
+  findAll(search: string, pagination: Pagination, sort?: string) {
+    const condition: any = {
+      name: { name: { [Op.like]: `%${search.trim()}%` } },
+    };
+
+    return this.bankRepository.findAll(condition, { order: sort, offset: pagination.offset, limit: pagination.limit });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} bank`;
+    return this.bankRepository.findOneById(id);
   }
 
-  update(id: number, updateBankDto: UpdateBankDto) {
-    return `This action updates a #${id} bank`;
+  checkExitById(id: number) {
+    return this.bankRepository.count({ id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bank`;
+  async update(id: number, dto: UpdateBankDto) {
+    const update = await this.bankRepository.findByIdAndUpdate(id, dto);
+    if (!update) throw Error(messageResponse.system.badRequest);
+    return update;
+  }
+
+  async remove(id: number) {
+    const softDelete = await this.bankRepository.softDelete(id);
+    if (!softDelete) throw Error(messageResponse.system.badRequest);
+    return softDelete;
   }
 }
