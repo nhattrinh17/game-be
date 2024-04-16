@@ -4,14 +4,14 @@ import { Status } from 'src/constants';
 import { PaymentTypeModel, addConditionNotDelete } from '.';
 
 @Table({
-  tableName: 'Payment',
+  tableName: 'PaymentTransactions',
   timestamps: true,
   indexes: [
     { name: 'name_index', fields: ['methodName'] },
     { name: 'slug_index', fields: ['slug'] },
   ],
 })
-export class PaymentModel extends Model {
+export class PaymentTransactionModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
   id: number;
 
