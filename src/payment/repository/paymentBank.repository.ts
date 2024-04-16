@@ -9,4 +9,14 @@ export class PaymentBankRepository extends BaseRepositoryAbstract<PaymentBankMod
   constructor(@InjectModel(PaymentBankModel) private readonly paymentBankModel: typeof PaymentBankModel) {
     super(paymentBankModel);
   }
+
+  async findAllDataBankByPaymentId(paymentId: number) {
+    const paymentBanks = await this.paymentBankModel.findAll({
+      where: { paymentId },
+      include: [{ association: PaymentBankModel.associations.bank }],
+    });
+
+    // Trả về danh sách các banks được lấy từ bảng PaymentBankModel
+    return paymentBanks.map((paymentBank) => paymentBank.bank);
+  }
 }

@@ -21,6 +21,6 @@ export class UpdatePaymentDto {
 }
 
 export class AddOrRemoveBankInPayment {
-  @ApiProperty({ name: 'bank', type: Number, description: 'Id bản ghi ngân hàng' })
-  bank: number;
+  @ApiProperty({ name: 'banks', type: [Number], description: 'Id bản ghi ngân hàng' })
+  banks: number[];
 }

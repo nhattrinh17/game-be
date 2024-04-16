@@ -7,7 +7,7 @@ import { BanksModel, PaymentTypeModel, addConditionNotDelete } from '.';
   tableName: 'Payment',
   timestamps: true,
   indexes: [
-    { name: 'name_index', fields: ['name'] },
+    { name: 'name_index', fields: ['methodName'] },
     { name: 'slug_index', fields: ['slug'] },
   ],
 })
@@ -37,11 +37,8 @@ export class PaymentModel extends Model {
   @Column({ type: DataType.STRING })
   slug: string;
 
-  @Column({ type: DataType.INTEGER })
-  minimum: number;
-
-  @Column({ type: DataType.INTEGER })
-  maximum: number;
+  @Column({ type: DataType.BOOLEAN, defaultValue: true })
+  showAccount: boolean;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDeleted: boolean;

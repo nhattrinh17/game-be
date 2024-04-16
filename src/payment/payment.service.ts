@@ -22,7 +22,8 @@ export class PaymentService {
   ) {}
 
   async create(dto: CreatePaymentDto) {
-    if (!dto.paymentTypeId || !dto.methodImage || !dto.methodName || !dto.minimum || !dto.maximum) throw Error(messageResponse.system.missingData);
+    console.log('!dto.paymentTypeId || !dto.methodImage || !dto.methodName', !dto.paymentTypeId || !dto.methodImage || !dto.methodName);
+    if (!dto.paymentTypeId || !dto.methodImage || !dto.methodName) throw Error(messageResponse.system.missingData);
     const checkPaymentType = await this.paymentTypeService.checkExit(dto.paymentTypeId);
     if (!checkPaymentType) throw Error(messageResponse.payment.paymentTypeIdNotFound);
     if (dto.bankIds?.length) {
@@ -32,7 +33,16 @@ export class PaymentService {
     const slug = generateSlug(dto.methodName);
     const checkExit = await this.paymentRepository.findOneByCondition({ slug });
     if (checkExit) throw Error(messageResponse.system.duplicateData);
-    return this.paymentRepository.create({ ...dto, slug });
+
+    const paymentCreate = await this.paymentRepository.create({ ...dto, slug });
+    if (dto.bankIds?.length) {
+      Promise.all(
+        dto.bankIds.map(async (bank) => {
+          return this.paymentBankRepository.create({ paymentId: paymentCreate.id, bankId: bank });
+        }),
+      );
+    }
+    return paymentCreate;
   }
 
   findAll(search: string, pagination: Pagination, paymentTypeId: number, sort?: string) {
@@ -44,8 +54,14 @@ export class PaymentService {
     return this.paymentRepository.findAll(condition, { order: sort, offset: pagination.offset, limit: pagination.limit });
   }
 
-  findOne(id: number) {
-    return this.paymentRepository.findOneById(id);
+  async findOne(id: number) {
+    const paymentById = await this.paymentRepository.findOneById(id);
+    if (!paymentById) throw Error(messageResponse.system.idInvalid);
+    const paymentBank = await this.paymentBankRepository.findAllDataBankByPaymentId(id);
+    return {
+      ...paymentById,
+      banks: paymentBank,
+    };
   }
 
   async update(id: number, dto: UpdatePaymentDto) {
@@ -54,21 +70,22 @@ export class PaymentService {
     return update;
   }
 
-  // async deleteBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
-  //   const paymentById = await this.paymentRepository.findOneById(idPayment);
-  //   if (!paymentById) throw Error(messageResponse.system.idInvalid);
-  //   if (!paymentById.bankIds.find((bankId) => bankId == dto.bank)) throw Error(messageResponse.payment.bankNotFound);
-  //   paymentById.bankIds = paymentById.bankIds.filter((bankId) => bankId != dto.bank);
-  //   return paymentById.save();
-  // }
+  async deleteBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
+    const paymentById = await this.paymentRepository.findOneById(idPayment);
+    if (!paymentById) throw Error(messageResponse.system.idInvalid);
+    await Promise.all(dto.banks.map((bank) => this.paymentBankRepository.permanentlyDeleteByCondition({ paymentId: idPayment, bankId: bank })));
+  }
 
-  // async addBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
-  //   const paymentById = await this.paymentRepository.findOneById(idPayment);
-  //   if (!paymentById) throw Error(messageResponse.system.idInvalid);
-  //   if (paymentById.bankIds.find((bankId) => bankId == dto.bank)) throw Error(messageResponse.payment.bankHasExist);
-  //   paymentById.bankIds.push(dto.bank);
-  //   return paymentById.save();
-  // }
+  async addBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
+    const paymentById = await this.paymentRepository.findOneById(idPayment);
+    if (!paymentById) throw Error(messageResponse.system.idInvalid);
+    await Promise.all(
+      dto.banks.map(async (bank) => {
+        const checkExit = await this.paymentBankRepository.count({ paymentId: idPayment, bankId: bank });
+        if (checkExit == 0) return this.paymentBankRepository.create({ paymentId: idPayment, bankId: bank });
+      }),
+    );
+  }
 
   async remove(id: number) {
     const softDelete = await this.paymentRepository.softDelete(id);

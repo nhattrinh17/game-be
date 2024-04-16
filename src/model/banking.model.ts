@@ -6,7 +6,7 @@ import { addConditionNotDelete } from '.';
 @Table({
   tableName: 'Banks',
   timestamps: true,
-  indexes: [{ name: 'name_index', fields: ['name'] }],
+  // indexes: [{ name: 'name_index', fields: ['name'] }],
 })
 export class BanksModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })

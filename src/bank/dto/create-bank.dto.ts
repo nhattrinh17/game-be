@@ -4,7 +4,7 @@ export class CreateBankDto {
   @ApiProperty({ name: 'nameBank', description: 'Tên ngân hàng', type: String })
   nameBank: string;
 
-  @ApiProperty({ name: 'nameBank', description: 'Tên ngân hàng', type: Number })
+  @ApiProperty({ name: 'binBank', description: 'Mã ngân hàng', type: Number })
   binBank: number;
 
   @ApiProperty({ name: 'branch', description: 'Tên chi nhánh', type: String })

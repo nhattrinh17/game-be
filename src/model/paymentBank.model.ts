@@ -7,6 +7,9 @@ import { BanksModel } from './banking.model';
   timestamps: true,
 })
 export class PaymentBankModel extends Model {
+  @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
+  id: number;
+
   @PrimaryKey
   @ForeignKey(() => PaymentModel) // Khai báo khóa ngoại cho cột paymentId
   @Column(DataType.INTEGER)

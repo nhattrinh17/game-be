@@ -86,7 +86,15 @@ export abstract class BaseRepositoryAbstract<T extends Model> implements BaseRep
     }
 
     await delete_item.destroy();
+    return true;
+  }
 
+  async permanentlyDeleteByCondition(condition: object): Promise<boolean> {
+    const delete_item = await this.findOneByCondition(condition);
+    if (!delete_item) {
+      return false;
+    }
+    await delete_item.destroy();
     return true;
   }
 
