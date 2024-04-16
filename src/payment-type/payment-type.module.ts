@@ -15,6 +15,11 @@ import { PaymentTypeRepository } from './payment-type.repository';
       useClass: PaymentTypeRepository,
     },
   ],
-  exports: [PaymentTypeService],
+  exports: [
+    {
+      provide: 'PaymentTypeRepositoryInterface',
+      useClass: PaymentTypeRepository,
+    },
+  ],
 })
 export class PaymentTypeModule {}

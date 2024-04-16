@@ -1,19 +1,22 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { AddOrRemoveBankInPayment, UpdatePaymentDto } from './dto/update-payment.dto';
-import { PaymentRepositoryInterface } from './payment.interface';
+import { PaymentRepositoryInterface } from './interface/payment.interface';
 import { PaymentTypeService } from 'src/payment-type/payment-type.service';
 import { BankService } from 'src/bank/bank.service';
 import { messageResponse } from 'src/constants';
 import { generateSlug } from 'src/utils';
 import { Pagination } from 'src/middlewares';
 import { Op } from 'sequelize';
+import { PaymentBankRepositoryInterface } from './interface/paymentBank.interface';
 
 @Injectable()
 export class PaymentService {
   constructor(
     @Inject('PaymentRepositoryInterface')
     private readonly paymentRepository: PaymentRepositoryInterface,
+    @Inject('PaymentBankRepositoryInterface')
+    private readonly paymentBankRepository: PaymentBankRepositoryInterface,
     private readonly paymentTypeService: PaymentTypeService,
     private readonly bankService: BankService,
   ) {}
@@ -51,21 +54,21 @@ export class PaymentService {
     return update;
   }
 
-  async deleteBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
-    const paymentById = await this.paymentRepository.findOneById(idPayment);
-    if (!paymentById) throw Error(messageResponse.system.idInvalid);
-    if (!paymentById.bankIds.find((bankId) => bankId == dto.bank)) throw Error(messageResponse.payment.bankNotFound);
-    paymentById.bankIds = paymentById.bankIds.filter((bankId) => bankId != dto.bank);
-    return paymentById.save();
-  }
+  // async deleteBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
+  //   const paymentById = await this.paymentRepository.findOneById(idPayment);
+  //   if (!paymentById) throw Error(messageResponse.system.idInvalid);
+  //   if (!paymentById.bankIds.find((bankId) => bankId == dto.bank)) throw Error(messageResponse.payment.bankNotFound);
+  //   paymentById.bankIds = paymentById.bankIds.filter((bankId) => bankId != dto.bank);
+  //   return paymentById.save();
+  // }
 
-  async addBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
-    const paymentById = await this.paymentRepository.findOneById(idPayment);
-    if (!paymentById) throw Error(messageResponse.system.idInvalid);
-    if (paymentById.bankIds.find((bankId) => bankId == dto.bank)) throw Error(messageResponse.payment.bankHasExist);
-    paymentById.bankIds.push(dto.bank);
-    return paymentById.save();
-  }
+  // async addBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
+  //   const paymentById = await this.paymentRepository.findOneById(idPayment);
+  //   if (!paymentById) throw Error(messageResponse.system.idInvalid);
+  //   if (paymentById.bankIds.find((bankId) => bankId == dto.bank)) throw Error(messageResponse.payment.bankHasExist);
+  //   paymentById.bankIds.push(dto.bank);
+  //   return paymentById.save();
+  // }
 
   async remove(id: number) {
     const softDelete = await this.paymentRepository.softDelete(id);

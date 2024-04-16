@@ -43,12 +43,6 @@ export class PaymentModel extends Model {
   @Column({ type: DataType.INTEGER })
   maximum: number;
 
-  @Column({ type: DataType.ARRAY(DataType.INTEGER), allowNull: true })
-  bankIds: number[]; // Store array banks
-
-  @HasMany(() => BanksModel, 'id')
-  banks: BanksModel[];
-
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDeleted: boolean;
 

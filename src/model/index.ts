@@ -9,6 +9,7 @@ export * from './game-type.model';
 export * from './payment-type.model';
 export * from './banking.model';
 export * from './payment.model';
+export * from './paymentBank.model';
 
 export const addConditionNotDelete = (options: any) => {
   if (!options.where) {
