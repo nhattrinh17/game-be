@@ -10,6 +10,8 @@ export * from './payment-type.model';
 export * from './banking.model';
 export * from './payment.model';
 export * from './paymentBank.model';
+export * from './payment-transaction.model';
+export * from './notification.model';
 
 export const addConditionNotDelete = (options: any) => {
   if (!options.where) {

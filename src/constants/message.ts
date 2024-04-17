@@ -7,6 +7,7 @@ export const messageResponse = {
     notFound: 'not_found',
     duplicateData: 'duplicate_data',
     idInvalid: 'id_invalid',
+    dataInvalid: 'data_invalid',
   },
   auth: {
     userNotFound: 'user_not_found',

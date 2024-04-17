@@ -4,7 +4,7 @@ import { AddOrRemoveBankInPayment, UpdatePaymentDto } from './dto/update-payment
 import { PaymentRepositoryInterface } from './interface/payment.interface';
 import { PaymentTypeService } from 'src/payment-type/payment-type.service';
 import { BankService } from 'src/bank/bank.service';
-import { messageResponse } from 'src/constants';
+import { TypePayment, messageResponse } from 'src/constants';
 import { generateSlug } from 'src/utils';
 import { Pagination } from 'src/middlewares';
 import { Op } from 'sequelize';
@@ -22,8 +22,8 @@ export class PaymentService {
   ) {}
 
   async create(dto: CreatePaymentDto) {
-    console.log('!dto.paymentTypeId || !dto.methodImage || !dto.methodName', !dto.paymentTypeId || !dto.methodImage || !dto.methodName);
-    if (!dto.paymentTypeId || !dto.methodImage || !dto.methodName) throw Error(messageResponse.system.missingData);
+    if (!dto.paymentTypeId || !dto.methodImage || !dto.methodName || !dto.type) throw Error(messageResponse.system.missingData);
+    if ((dto.type == TypePayment.showPopup && !dto.imagePopup) || (dto.type == TypePayment.showMessage && !dto.message)) throw Error(messageResponse.system.dataInvalid);
     const checkPaymentType = await this.paymentTypeService.checkExit(dto.paymentTypeId);
     if (!checkPaymentType) throw Error(messageResponse.payment.paymentTypeIdNotFound);
     if (dto.bankIds?.length) {

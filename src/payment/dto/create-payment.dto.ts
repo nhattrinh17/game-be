@@ -27,4 +27,13 @@ export class CreatePaymentDto {
 
   @ApiProperty({ name: 'showAccount', type: Boolean, description: 'HIển thị các thông tin tài khoản' })
   showAccount: boolean;
+
+  @ApiProperty({ name: 'type', type: String, description: 'Loại thanh toán' })
+  type: string;
+
+  @ApiProperty({ name: 'imagePopup', type: String, description: 'Ảnh khi mở popup thanh toán' })
+  imagePopup: string;
+
+  @ApiProperty({ name: 'message', type: String, description: 'Tin nhắn khi không hiển thị popup' })
+  message: string;
 }

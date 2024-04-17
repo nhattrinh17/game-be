@@ -1,10 +1,10 @@
 import { BeforeCount, BeforeFind, BelongsTo, Column, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { DataType } from 'sequelize-typescript';
-import { Status } from 'src/constants';
+import { Status, TypePayment } from 'src/constants';
 import { PaymentTypeModel, addConditionNotDelete } from '.';
 
 @Table({
-  tableName: 'Payment',
+  tableName: 'Payments',
   timestamps: true,
   indexes: [
     { name: 'name_index', fields: ['methodName'] },
@@ -36,6 +36,15 @@ export class PaymentModel extends Model {
 
   @Column({ type: DataType.STRING })
   slug: string;
+
+  @Column({ type: DataType.STRING, defaultValue: TypePayment.showPopup })
+  type: string;
+
+  @Column({ type: DataType.STRING })
+  imagePopup: string;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  message: string;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: true })
   showAccount: boolean;

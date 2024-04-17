@@ -26,6 +26,7 @@ import { BankModule } from './bank/bank.module';
 import { GameModule } from './game/game.module';
 import { PermissionGuard } from './auth/guards/permission.guard';
 import { PaymentTransactionModule } from './payment-transaction/payment-transaction.module';
+import { NotificationModule } from './notification/notification.module';
 
 console.log(__dirname);
 @Module({
@@ -111,6 +112,7 @@ console.log(__dirname);
     PaymentModule,
     BankModule,
     PaymentTransactionModule,
+    NotificationModule,
   ],
   providers: [
     //

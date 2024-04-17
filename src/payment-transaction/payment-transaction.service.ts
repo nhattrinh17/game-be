@@ -1,9 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dto';
 import { UpdatePaymentTransactionDto } from './dto/update-payment-transaction.dto';
+import { PaymentTransactionRepositoryInterface } from './interfaces/payment-transaction.interface';
 
 @Injectable()
 export class PaymentTransactionService {
+  constructor(
+    @Inject('PaymentTransactionRepositoryInterface')
+    private readonly paymentTransactionRepository: PaymentTransactionRepositoryInterface,
+  ) {}
+
   create(createPaymentTransactionDto: CreatePaymentTransactionDto) {
     return 'This action adds a new paymentTransaction';
   }

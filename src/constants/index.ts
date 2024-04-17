@@ -29,6 +29,11 @@ export const TypePermissionCategory = {
   Multilevel: 'MUlTILEVEL',
 };
 
+export const TypePayment = {
+  showPopup: 'showPopup',
+  showMessage: 'showMessage',
+};
+
 export const binBanks = {
   970400: 'Ngân hàng TMCP Sài Gòn Công Thương',
   970403: 'Ngân hàng TMCP Sài Gòn Thương Tín',
@@ -86,6 +91,17 @@ export const binBanks = {
   970467: 'Ngân hàng KEB HANA - Chi nhánh Hà Nội',
   970468: 'Công ty Tài chính TNHH MTV Mirae Asset (Việt Nam)',
   970470: 'Công ty Tài chính TNHH MB SHINSEI',
+};
+
+export const StatusPaymentTranSaction = {
+  processing: 0,
+  success: 1,
+  cancel: 2,
+};
+
+export const TypePaymentTranSaction = {
+  recharge: 0,
+  withdrawMoney: 1,
 };
 
 export * from './message';
