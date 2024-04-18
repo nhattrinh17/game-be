@@ -6,7 +6,10 @@ import { BanksModel, NotificationModel, PaymentModel, UserModel, addConditionNot
 @Table({
   tableName: 'PaymentTransactions',
   timestamps: true,
-  indexes: [{ name: 'name_index', fields: ['methodName'] }],
+  indexes: [
+    { name: 'paymentId_index', fields: ['paymentId'] },
+    { name: 'bank_index', fields: ['bankTransferId', 'bankReceiveId'] },
+  ],
 })
 export class PaymentTransactionModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
@@ -28,16 +31,26 @@ export class PaymentTransactionModel extends Model {
 
   @ForeignKey(() => BanksModel)
   @Column
-  bankId: number;
+  bankTransferId: number;
 
   @BelongsTo(() => BanksModel)
-  bank: BanksModel;
+  bankTransfer: BanksModel;
+
+  @ForeignKey(() => BanksModel)
+  @Column
+  bankReceiveId: number;
+
+  @BelongsTo(() => BanksModel)
+  bankReceive: BanksModel;
 
   @Column({ type: DataType.STRING })
   qrCode: string;
 
   @Column({ type: DataType.STRING })
   type: string;
+
+  @Column({ type: DataType.INTEGER })
+  point: number;
 
   @Column({ type: DataType.INTEGER, defaultValue: StatusPaymentTranSaction.processing })
   status: number;

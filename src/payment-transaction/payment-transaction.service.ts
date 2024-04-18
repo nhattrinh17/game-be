@@ -1,7 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dto';
-import { UpdatePaymentTransactionDto } from './dto/update-payment-transaction.dto';
+import { UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
 import { PaymentTransactionRepositoryInterface } from './interfaces/payment-transaction.interface';
+import { messageResponse } from 'src/constants';
+import { Pagination } from 'src/middlewares';
+import { BanksModel, UserModel } from 'src/model';
 
 @Injectable()
 export class PaymentTransactionService {
@@ -10,23 +13,71 @@ export class PaymentTransactionService {
     private readonly paymentTransactionRepository: PaymentTransactionRepositoryInterface,
   ) {}
 
-  create(createPaymentTransactionDto: CreatePaymentTransactionDto) {
-    return 'This action adds a new paymentTransaction';
+  create(dto: CreatePaymentTransactionDto) {
+    if (!dto.userId || !dto.bankReceiveId || !dto.bankReceiveId || dto.type == undefined || !dto.point) throw new Error(messageResponse.system.missingData);
+    return this.paymentTransactionRepository.create(dto);
   }
 
-  findAll() {
-    return `This action returns all paymentTransaction`;
+  findAll(pagination: Pagination, userId: number, type: string, status: number, sort?: string) {
+    const condition: any = {};
+    if (userId) condition.userId = userId;
+    if (status) condition.status = status;
+    if (type) condition.type = type;
+
+    return this.paymentTransactionRepository.findAll(condition, {
+      order: sort,
+      offset: pagination.offset,
+      limit: pagination.limit,
+      include: [
+        {
+          model: UserModel,
+          as: 'user',
+          attributes: ['id', 'username', 'email'], // Chỉ lấy ra id, username và email từ bảng user
+        },
+        {
+          model: BanksModel,
+          as: 'bankTransfer',
+          attributes: ['id', 'nameBank', 'accountOwner'],
+        },
+        {
+          model: BanksModel,
+          as: 'bankReceive',
+          attributes: ['id', 'nameBank', 'accountOwner'],
+        },
+      ],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} paymentTransaction`;
+  async findOne(id: number) {
+    const paymentById = await this.paymentTransactionRepository.findOneById(id, [], {
+      include: [
+        {
+          model: UserModel,
+          as: 'user',
+          attributes: ['id', 'username', 'email'], // Chỉ lấy ra id, username và email từ bảng user
+        },
+        {
+          model: BanksModel,
+          as: 'bankTransfer',
+          attributes: ['id', 'nameBank', 'accountOwner'],
+        },
+        {
+          model: BanksModel,
+          as: 'bankReceive',
+          attributes: ['id', 'nameBank', 'accountOwner'],
+        },
+      ],
+    });
+    if (!paymentById) throw Error(messageResponse.system.idInvalid);
   }
 
-  update(id: number, updatePaymentTransactionDto: UpdatePaymentTransactionDto) {
-    return `This action updates a #${id} paymentTransaction`;
+  async update(id: number, dto: UpdateStatusPaymentTransactionDto) {
+    const update = await this.paymentTransactionRepository.findByIdAndUpdate(id, dto);
+    if (!update) throw Error(messageResponse.system.badRequest);
+    return update;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} paymentTransaction`;
+    return this.paymentTransactionRepository.softDelete(id);
   }
 }

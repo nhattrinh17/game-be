@@ -100,7 +100,7 @@ export const StatusPaymentTranSaction = {
 };
 
 export const TypePaymentTranSaction = {
-  recharge: 0,
+  deposit: 0,
   withdrawMoney: 1,
 };
 
