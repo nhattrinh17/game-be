@@ -57,6 +57,7 @@ export class UserService {
   }
 
   async findAll(pagination: Pagination, search: string, status: string, sort?: any) {
+    console.log('🛫🛫🛫 ~ file: user.service.ts:60 ~ findAll ~ pagination:', pagination);
     const filter: any = {};
     if (search) filter[Op.or] = [{ username: { [Op.like]: `%${search.trim()}%` } }, { name: { [Op.like]: `%${search.trim()}%` } }];
     if (status) filter.status = status;
@@ -64,10 +65,10 @@ export class UserService {
     const promise2 = this.userModel.findAll({
       //
       where: filter,
-      order: sort ? [sort, 'DESC'] : ['id', 'DESC'],
+      order: [sort ? [sort, 'DESC'] : ['id', 'DESC']],
       offset: pagination.offset,
       limit: pagination.limit,
-      attributes: ['id', 'email', 'username', 'name', 'phone', 'status', , 'avatar'],
+      attributes: ['id', 'email', 'username', 'name', 'phone', 'status', 'avatar'],
     });
     const [countDocument, data] = await Promise.all([promise1, promise2]);
     return {

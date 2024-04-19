@@ -35,7 +35,7 @@ export abstract class BaseRepositoryAbstract<T extends Model> implements BaseRep
         order: [options?.sort ? [options?.sort, 'DESC'] : ['id', 'DESC']],
         offset: options?.offset,
         limit: options?.limit,
-        include: options?.include,
+        include: options?.include && [],
       }),
     ]);
 
