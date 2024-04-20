@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { BankService } from './bank.service';
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
@@ -12,8 +12,12 @@ export class BankController {
 
   @Post()
   @ApiOperationCustom('Bank', 'post')
-  create(@Body() createBankDto: CreateBankDto) {
-    return this.bankService.create(createBankDto);
+  async create(@Body() createBankDto: CreateBankDto) {
+    try {
+      return await this.bankService.create(createBankDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get()
@@ -42,13 +46,22 @@ export class BankController {
   }
 
   @Patch(':id')
-  @ApiOperationCustom('Bank', 'delete')
-  update(@Param('id') id: string, @Body() updateBankDto: UpdateBankDto) {
-    return this.bankService.update(+id, updateBankDto);
+  @ApiOperationCustom('Bank', 'patch')
+  async update(@Param('id') id: string, @Body() updateBankDto: UpdateBankDto) {
+    try {
+      return await this.bankService.update(+id, updateBankDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bankService.remove(+id);
+  @ApiOperationCustom('Bank', 'delete')
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.bankService.remove(+id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

@@ -81,6 +81,10 @@ export class UserService {
     return this, this.userModel.findOne({ where: { id }, attributes: ['id', 'email', 'username', 'name', 'phone', 'status', 'avatar'] });
   }
 
+  checkExist(id: number) {
+    return this.userModel.count({ where: { id } });
+  }
+
   // update(id: number, updateUserDto: UpdateUserDto) {
   //   return `This action updates a #${id} user`;
   // }

@@ -4,8 +4,12 @@ export enum SORT_TYPE {
 }
 
 export type FindAllResponse<T> = {
-  count: number;
-  items: T[];
+  pagination: {
+    total: number;
+    limit: number;
+    page: number;
+  };
+  data: T[];
   next_key?: object;
 };
 

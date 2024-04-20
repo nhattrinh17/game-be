@@ -15,5 +15,11 @@ import { GameTypeRepository } from './game-type.repository';
       useClass: GameTypeRepository,
     },
   ],
+  exports: [
+    {
+      provide: 'GameTypeRepositoryInterface',
+      useClass: GameTypeRepository,
+    },
+  ],
 })
 export class GameTypeModule {}

@@ -104,4 +104,9 @@ export const TypePaymentTranSaction = {
   withdrawMoney: 1,
 };
 
+export const TypeGamePoint = {
+  main: 0,
+  sub: 1,
+};
+
 export * from './message';

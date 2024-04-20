@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -12,8 +12,12 @@ export class PaymentController {
 
   @Post()
   @ApiOperationCustom('Payment', 'post')
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
+  async create(@Body() createPaymentDto: CreatePaymentDto) {
+    try {
+      return await this.paymentService.create(createPaymentDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get()
@@ -37,19 +41,31 @@ export class PaymentController {
 
   @Get(':id')
   @ApiOperationCustom('Payment', 'get', true, true)
-  findOne(@Param('id') id: string) {
-    return this.paymentService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.paymentService.findOne(+id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Patch(':id')
   @ApiOperationCustom('Payment', 'patch')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentService.update(+id, updatePaymentDto);
+  async update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
+    try {
+      return await this.paymentService.update(+id, updatePaymentDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
   @ApiOperationCustom('Payment', 'delete')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.paymentService.remove(+id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

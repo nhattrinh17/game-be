@@ -1,31 +1,27 @@
 import { BeforeCount, BeforeFind, Column, Model, Table } from 'sequelize-typescript';
 import { DataType } from 'sequelize-typescript';
-import { Status } from 'src/constants';
 import { addConditionNotDelete } from '.';
 
 @Table({
-  tableName: 'Banks',
+  tableName: 'GamePoints',
   timestamps: true,
-  // indexes: [{ name: 'name_index', fields: ['name'] }],
+  indexes: [{ name: 'type_index', fields: ['type'] }],
 })
-export class BanksModel extends Model {
+export class GamePointModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
   id: number;
 
   @Column({ type: DataType.STRING })
-  nameBank: string;
+  name: string;
+
+  @Column({ type: DataType.STRING })
+  desc: string;
 
   @Column({ type: DataType.INTEGER })
-  binBank: number;
+  type: number;
 
-  @Column({ type: DataType.STRING })
-  branch: string;
-
-  @Column({ type: DataType.STRING })
-  accountOwner: string;
-
-  @Column({ type: DataType.STRING })
-  accountNumber: string;
+  @Column({ type: DataType.STRING, defaultValue: '' })
+  group: string;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDeleted: boolean;

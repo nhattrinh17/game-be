@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { GameTypeService } from './game-type.service';
 import { CreateGameTypeDto } from './dto/create-game-type.dto';
 import { UpdateGameTypeDto } from './dto/update-game-type.dto';
@@ -12,8 +12,12 @@ export class GameTypeController {
 
   @Post()
   @ApiOperationCustom('Game Type', 'Post')
-  create(@Body() createGameTypeDto: CreateGameTypeDto) {
-    return this.gameTypeService.create(createGameTypeDto);
+  async create(@Body() createGameTypeDto: CreateGameTypeDto) {
+    try {
+      return await this.gameTypeService.create(createGameTypeDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get()
@@ -43,13 +47,21 @@ export class GameTypeController {
 
   @Patch(':id')
   @ApiOperationCustom('Game Type', 'Patch')
-  update(@Param('id') id: string, @Body() updateGameTypeDto: UpdateGameTypeDto) {
-    return this.gameTypeService.update(+id, updateGameTypeDto);
+  async update(@Param('id') id: string, @Body() updateGameTypeDto: UpdateGameTypeDto) {
+    try {
+      return await this.gameTypeService.update(+id, updateGameTypeDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
   @ApiOperationCustom('Game Type', 'Delete')
-  remove(@Param('id') id: string) {
-    return this.gameTypeService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.gameTypeService.remove(+id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

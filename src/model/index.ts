@@ -12,6 +12,9 @@ export * from './payment.model';
 export * from './paymentBank.model';
 export * from './payment-transaction.model';
 export * from './notification.model';
+export * from './game-point.model';
+export * from './game.model';
+export * from './user-point.model';
 
 export const addConditionNotDelete = (options: any) => {
   if (!options.where) {

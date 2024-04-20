@@ -1,12 +1,15 @@
 import { BeforeCount, BeforeFind, BelongsTo, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { DataType } from 'sequelize-typescript';
 import { Status } from 'src/constants';
-import { GameTypeModel, addConditionNotDelete } from '.';
+import { GamePointModel, GameTypeModel, addConditionNotDelete } from '.';
 
 @Table({
   tableName: 'Games',
   timestamps: true,
-  indexes: [{ name: 'status_index', fields: ['status'] }],
+  indexes: [
+    { name: 'status_index', fields: ['status'] },
+    { name: 'slug_index', fields: ['slug'] },
+  ],
 })
 export class GameModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
@@ -25,6 +28,13 @@ export class GameModel extends Model {
 
   @BelongsTo(() => GameTypeModel)
   gameType: GameTypeModel;
+
+  @ForeignKey(() => GamePointModel)
+  @Column
+  gamePointId: number;
+
+  @BelongsTo(() => GamePointModel)
+  gamePoint: GamePointModel;
 
   @Column({ type: DataType.STRING, defaultValue: Status.Active })
   status: string;

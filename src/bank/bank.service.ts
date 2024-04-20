@@ -24,7 +24,7 @@ export class BankService {
       name: { name: { [Op.like]: `%${search.trim()}%` } },
     };
 
-    return this.bankRepository.findAll(condition, { order: sort, offset: pagination.offset, limit: pagination.limit });
+    return this.bankRepository.findAll(condition, { sort, offset: pagination.offset, limit: pagination.limit });
   }
 
   findOne(id: number) {

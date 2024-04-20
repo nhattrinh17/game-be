@@ -2,15 +2,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dto';
 import { UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
 import { PaymentTransactionRepositoryInterface } from './interfaces/payment-transaction.interface';
-import { messageResponse } from 'src/constants';
+import { StatusPaymentTranSaction, TypePaymentTranSaction, messageResponse } from 'src/constants';
 import { Pagination } from 'src/middlewares';
 import { BanksModel, UserModel } from 'src/model';
+import { UserPointService } from 'src/user-point/user-point.service';
 
 @Injectable()
 export class PaymentTransactionService {
   constructor(
     @Inject('PaymentTransactionRepositoryInterface')
     private readonly paymentTransactionRepository: PaymentTransactionRepositoryInterface,
+    private readonly userPointService: UserPointService,
   ) {}
 
   create(dto: CreatePaymentTransactionDto) {
@@ -25,7 +27,7 @@ export class PaymentTransactionService {
     if (type) condition.type = type;
 
     return this.paymentTransactionRepository.findAll(condition, {
-      order: sort,
+      sort,
       offset: pagination.offset,
       limit: pagination.limit,
       include: [
@@ -69,11 +71,20 @@ export class PaymentTransactionService {
       ],
     });
     if (!paymentById) throw Error(messageResponse.system.idInvalid);
+    return paymentById;
   }
 
   async update(id: number, dto: UpdateStatusPaymentTransactionDto) {
+    const transactionById = await this.paymentTransactionRepository.findOneById(id);
+    if (transactionById.status != StatusPaymentTranSaction.processing) throw new Error(messageResponse.paymentTransaction.transactionHasUpdate);
     const update = await this.paymentTransactionRepository.findByIdAndUpdate(id, dto);
     if (!update) throw Error(messageResponse.system.badRequest);
+    if (update.type == TypePaymentTranSaction.deposit && update.status == StatusPaymentTranSaction.success) {
+      await this.userPointService.addPointToMainPoint({
+        userId: update.userId,
+        points: update.point,
+      });
+    }
     return update;
   }
 

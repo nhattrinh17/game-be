@@ -27,11 +27,15 @@ export class GameTypeService {
     if (search) condition.name = { name: { [Op.like]: `%${search.trim()}%` } };
     if (status) condition.status = status;
 
-    return this.gameTypeRepository.findAll(condition, { order: sort, offset: pagination.offset, limit: pagination.limit });
+    return this.gameTypeRepository.findAll(condition, { sort, offset: pagination.offset, limit: pagination.limit });
   }
 
   findOne(id: number) {
     return this.gameTypeRepository.findOneById(id);
+  }
+
+  checkExit(id: number) {
+    return this.gameTypeRepository.count({ id });
   }
 
   async update(id: number, updateGameTypeDto: UpdateGameTypeDto) {

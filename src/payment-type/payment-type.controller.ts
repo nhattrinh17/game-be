@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Search } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, Search, HttpException, HttpStatus } from '@nestjs/common';
 import { PaymentTypeService } from './payment-type.service';
 import { CreatePaymentTypeDto } from './dto/create-payment-type.dto';
 import { UpdatePaymentTypeDto } from './dto/update-payment-type.dto';
@@ -12,8 +12,12 @@ export class PaymentTypeController {
 
   @Post()
   @ApiOperationCustom('Payment Type', 'POST')
-  create(@Body() createPaymentTypeDto: CreatePaymentTypeDto) {
-    return this.paymentTypeService.create(createPaymentTypeDto);
+  async create(@Body() createPaymentTypeDto: CreatePaymentTypeDto) {
+    try {
+      return await this.paymentTypeService.create(createPaymentTypeDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get()
@@ -43,13 +47,21 @@ export class PaymentTypeController {
 
   @Patch(':id')
   @ApiOperationCustom('Payment Type', 'patch')
-  update(@Param('id') id: string, @Body() updatePaymentTypeDto: UpdatePaymentTypeDto) {
-    return this.paymentTypeService.update(+id, updatePaymentTypeDto);
+  async update(@Param('id') id: string, @Body() updatePaymentTypeDto: UpdatePaymentTypeDto) {
+    try {
+      return await this.paymentTypeService.update(+id, updatePaymentTypeDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
   @ApiOperationCustom('Payment Type', 'delete')
-  remove(@Param('id') id: string) {
-    return this.paymentTypeService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.paymentTypeService.remove(+id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

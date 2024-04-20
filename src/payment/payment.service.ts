@@ -51,7 +51,7 @@ export class PaymentService {
     };
     if (paymentTypeId) condition.paymentTypeId = paymentTypeId;
 
-    return this.paymentRepository.findAll(condition, { order: sort, offset: pagination.offset, limit: pagination.limit });
+    return this.paymentRepository.findAll(condition, { sort, offset: pagination.offset, limit: pagination.limit });
   }
 
   async findOne(id: number) {

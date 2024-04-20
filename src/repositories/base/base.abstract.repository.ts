@@ -25,6 +25,7 @@ export abstract class BaseRepositoryAbstract<T extends Model> implements BaseRep
   }
 
   async findAll(condition: WhereOptions<T>, options?: any): Promise<FindAllResponse<T>> {
+    console.log('🚀 ~ BaseRepositoryAbstract<T ~ findAll ~ options:', options);
     const [count, items] = await Promise.all([
       //
       this.model.count({ where: condition }),
@@ -32,16 +33,20 @@ export abstract class BaseRepositoryAbstract<T extends Model> implements BaseRep
         //
         where: condition,
         attributes: options?.projection,
-        order: [options?.sort ? [options?.sort, 'DESC'] : ['id', 'DESC']],
+        order: [options?.sort ? [options?.sort, options?.typeSort || 'DESC'] : ['id', options?.typeSort || 'DESC']],
         offset: options?.offset,
         limit: options?.limit,
-        include: options?.include && [],
+        include: options?.include,
       }),
     ]);
 
     return {
-      count,
-      items,
+      pagination: {
+        total: count,
+        limit: options?.limit,
+        page: options?.page,
+      },
+      data: items,
     };
   }
 

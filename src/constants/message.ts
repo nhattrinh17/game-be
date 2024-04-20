@@ -52,4 +52,7 @@ export const messageResponse = {
     bankNotFound: 'bank_not_found',
     bankHasExist: 'bank_has_exist',
   },
+  paymentTransaction: {
+    transactionHasUpdate: 'transaction_has_update',
+  },
 };
