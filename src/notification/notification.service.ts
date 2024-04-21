@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { NotificationRepositoryInterface } from './interfaces/notification.interface';
+import { messageResponse } from 'src/constants';
+import { Pagination } from 'src/middlewares';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class NotificationService {
-  create(createNotificationDto: CreateNotificationDto) {
-    return 'This action adds a new notification';
+  constructor(
+    @Inject('NotificationRepositoryInterface')
+    private readonly notificationRepository: NotificationRepositoryInterface,
+  ) {}
+
+  create(dto: CreateNotificationDto) {
+    if (!dto.type || !dto.title || !dto.content || !dto.timePublish) throw new Error(messageResponse.system.missingData);
+    return this.notificationRepository.create(dto);
   }
 
-  findAll() {
-    return `This action returns all notification`;
+  findAll(type: string, maxTimePublish: string, pagination: Pagination, sort?: string, typeSort?: string) {
+    const condition: any = {};
+    if (type) condition.type = type;
+    if (maxTimePublish)
+      condition.timePublish = {
+        [Op.lte]: maxTimePublish,
+      };
+    return this.notificationRepository.findAll(condition, { projection: ['id', 'title', 'content', 'timePublish', 'kind', 'type'], sort, typeSort, offset: pagination.offset, limit: pagination.limit });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} notification`;
+    return this.notificationRepository.findOneById(id, ['id', 'title', 'content', 'timePublish', 'kind', 'type']);
   }
 
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
+  async update(id: number, dto: UpdateNotificationDto) {
+    const update = await this.notificationRepository.findByIdAndUpdate(id, dto);
+    if (!update) throw new Error(messageResponse.system.notFound);
+    return update;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async remove(id: number) {
+    const deleteItem = await this.notificationRepository.softDelete(id);
+    if (!deleteItem) throw new Error(messageResponse.system.notFound);
+    return deleteItem;
   }
 }

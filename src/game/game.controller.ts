@@ -3,7 +3,7 @@ import { GameService } from './game.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ApiOperationCustom } from 'src/custom-decorator';
+import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
 @ApiTags('Game')
 @Controller('game')
@@ -21,6 +21,7 @@ export class GameController {
   }
 
   @Get()
+  @BaseFilter()
   @ApiQuery({
     name: 'search',
     type: String,

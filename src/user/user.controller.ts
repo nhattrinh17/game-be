@@ -34,6 +34,7 @@ export class UserController {
 
   @Get()
   @BaseFilter()
+  @BaseFilter()
   @ApiQuery({
     name: 'search',
     description: 'User name hoặc email',

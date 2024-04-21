@@ -3,7 +3,7 @@ import { PaymentTransactionService } from './payment-transaction.service';
 import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dto';
 import { UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ApiOperationCustom } from 'src/custom-decorator';
+import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
 @ApiTags('Payment Transaction ')
 @Controller('payment-transaction')
@@ -20,6 +20,7 @@ export class PaymentTransactionController {
   }
 
   @Get()
+  @BaseFilter()
   @ApiQuery({
     name: 'userId',
     type: String,

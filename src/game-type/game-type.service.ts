@@ -47,5 +47,6 @@ export class GameTypeService {
   async remove(id: number) {
     const deleteItem = await this.gameTypeRepository.softDelete(id);
     if (!deleteItem) throw new Error(messageResponse.system.notFound);
+    return deleteItem;
   }
 }

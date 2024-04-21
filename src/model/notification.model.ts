@@ -5,7 +5,10 @@ import { addConditionNotDelete } from '.';
 @Table({
   tableName: 'Notifications',
   timestamps: true,
-  // indexes: [{ name: 'timePublish_index', fields: ['timePublish'] }],
+  indexes: [
+    { name: 'type_index', fields: ['type'] },
+    { name: 'timePublish_index', fields: ['timePublish'] },
+  ],
 })
 export class NotificationModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
@@ -16,6 +19,9 @@ export class NotificationModel extends Model {
 
   @Column({ type: DataType.STRING })
   type: string;
+
+  @Column({ type: DataType.STRING })
+  kind: string;
 
   @Column({ type: DataType.STRING })
   content: string;

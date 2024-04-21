@@ -3,7 +3,7 @@ import { GameTypeService } from './game-type.service';
 import { CreateGameTypeDto } from './dto/create-game-type.dto';
 import { UpdateGameTypeDto } from './dto/update-game-type.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ApiOperationCustom } from 'src/custom-decorator';
+import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
 @ApiTags('Game Type')
 @Controller('game-type')
@@ -21,6 +21,7 @@ export class GameTypeController {
   }
 
   @Get()
+  @BaseFilter()
   @ApiQuery({
     name: 'search',
     type: String,

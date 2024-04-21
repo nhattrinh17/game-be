@@ -3,7 +3,7 @@ import { GamePointService } from './game-point.service';
 import { CreateGamePointDto } from './dto/create-game-point.dto';
 import { UpdateGamePointDto } from './dto/update-game-point.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ApiOperationCustom } from 'src/custom-decorator';
+import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
 @ApiTags('Game Point')
 @Controller('game-point')
@@ -21,6 +21,7 @@ export class GamePointController {
   }
 
   @Get()
+  @BaseFilter()
   @ApiQuery({
     name: 'sort',
     type: String,

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PermissionActionService } from './permission-action.service';
 import { CreatePermissionActionDto } from './dto/create-permission-action.dto';
 import { UpdatePermissionActionDto } from './dto/update-permission-action.dto';
+import { BaseFilter } from 'src/custom-decorator';
 
 @Controller('permission-action')
 export class PermissionActionController {
@@ -13,6 +14,7 @@ export class PermissionActionController {
   }
 
   @Get()
+  @BaseFilter()
   findAll() {
     return this.permissionActionService.findAll();
   }

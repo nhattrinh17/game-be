@@ -109,4 +109,8 @@ export const TypeGamePoint = {
   sub: 1,
 };
 
+export const typeNotification = {
+  System: 'system',
+  User: 'individual',
+};
 export * from './message';

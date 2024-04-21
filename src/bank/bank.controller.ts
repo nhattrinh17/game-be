@@ -3,7 +3,7 @@ import { BankService } from './bank.service';
 import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ApiOperationCustom } from 'src/custom-decorator';
+import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
 @ApiTags('Bank')
 @Controller('bank')
@@ -21,6 +21,7 @@ export class BankController {
   }
 
   @Get()
+  @BaseFilter()
   @ApiQuery({
     name: 'search',
     type: String,

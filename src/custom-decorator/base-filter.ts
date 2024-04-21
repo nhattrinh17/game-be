@@ -17,33 +17,33 @@ export function BaseFilter() {
       example: 10,
       description: 'Số bản ghi trên 1 trang, ví dụ: 10, 25, 50, 100, ...',
     }),
-    ApiQuery({
-      name: 'search',
-      type: 'string',
-      required: false,
-      description: 'Tìm kiếm theo name sử dụng Mongo Regex search',
-    }),
-    ApiQuery({
-      name: 'startDate',
-      type: 'string',
-      required: false,
-      example: moment().subtract(1, 'month').format('YYYY-MM-DD'),
-      description: 'Ngày bắt đầu khi tìm kiếm trong khoảng thời gian, định dạng YYYY-MM-DD',
-    }),
-    ApiQuery({
-      name: 'endDate',
-      type: 'string',
-      required: false,
-      example: moment().format('YYYY-MM-DD'),
-      description: 'Ngày kết thúc khi tìm kiếm trong khoảng thời gian, định dạng YYYY-MM-DD',
-    }),
-    ApiQuery({
-      name: 'status',
-      type: 'string',
-      required: false,
-      enum: Status,
-      description: 'Lọc theo trạng thái ACTIVE/INACTIVE',
-    }),
+    // ApiQuery({
+    //   name: 'search',
+    //   type: 'string',
+    //   required: false,
+    //   description: 'Tìm kiếm theo name sử dụng Mongo Regex search',
+    // }),
+    // ApiQuery({
+    //   name: 'startDate',
+    //   type: 'string',
+    //   required: false,
+    //   example: moment().subtract(1, 'month').format('YYYY-MM-DD'),
+    //   description: 'Ngày bắt đầu khi tìm kiếm trong khoảng thời gian, định dạng YYYY-MM-DD',
+    // }),
+    // ApiQuery({
+    //   name: 'endDate',
+    //   type: 'string',
+    //   required: false,
+    //   example: moment().format('YYYY-MM-DD'),
+    //   description: 'Ngày kết thúc khi tìm kiếm trong khoảng thời gian, định dạng YYYY-MM-DD',
+    // }),
+    // ApiQuery({
+    //   name: 'status',
+    //   type: 'string',
+    //   required: false,
+    //   enum: Status,
+    //   description: 'Lọc theo trạng thái ACTIVE/INACTIVE',
+    // }),
   );
 }
 

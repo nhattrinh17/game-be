@@ -2,17 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpS
 import { UserPointService } from './user-point.service';
 import { MovePointToGameOtherDto } from './dto/update-user-point.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiOperationCustom } from 'src/custom-decorator';
+import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
 @ApiTags('User Point')
 @Controller('user-point')
 export class UserPointController {
   constructor(private readonly userPointService: UserPointService) {}
 
-  @Get()
-  findAll() {
-    return this.userPointService.findAll();
-  }
+  // @Get()
+  // @BaseFilter()
+  // findAll() {
+  //   return this.userPointService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
