@@ -6,7 +6,7 @@ import { ConfirmAccountDto } from './dto/update-auth.dto';
 import { LoginDto, RefreshTokenDto } from './dto/create-auth.dto';
 import { Helper } from 'src/utils';
 import { JwtService } from '@nestjs/jwt';
-import { messageResponse } from 'src/constants';
+import { TypeUser, messageResponse } from 'src/constants';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { UserService } from 'src/user/user.service';
@@ -64,8 +64,8 @@ export class AuthService {
     };
   }
 
-  generateAccessToken(payload: any) {
-    return this.jwtService.signAsync(payload);
+  generateAccessToken(payload: any, isRemember?: boolean) {
+    return isRemember ? this.jwtService.signAsync(payload, { expiresIn: '365d' }) : this.jwtService.signAsync(payload);
   }
 
   generateRefreshToken(payload: any) {
@@ -97,7 +97,7 @@ export class AuthService {
       typeUser: user.typeUser,
     };
     return {
-      access_token: await this.generateAccessToken(payloadAccessToken),
+      access_token: await this.generateAccessToken(payloadAccessToken, Boolean(user.typeUser == TypeUser.Admin && dto.isRemember)),
       refresh_token: await this.generateRefreshToken({ id: user.id }),
     };
   }
