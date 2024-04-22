@@ -20,7 +20,7 @@ export class PaymentTransactionService {
     return this.paymentTransactionRepository.create(dto);
   }
 
-  findAll(pagination: Pagination, userId: number, type: string, status: number, sort?: string) {
+  findAll(pagination: Pagination, userId: number, type: string, status: number, sort?: string, typeSort?: string) {
     const condition: any = {};
     if (userId) condition.userId = userId;
     if (status) condition.status = status;
@@ -28,6 +28,7 @@ export class PaymentTransactionService {
 
     return this.paymentTransactionRepository.findAll(condition, {
       sort,
+      typeSort,
       offset: pagination.offset,
       limit: pagination.limit,
       include: [

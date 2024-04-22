@@ -22,12 +22,12 @@ export class GameTypeService {
     return this.gameTypeRepository.create(dto);
   }
 
-  findAll(search: string, pagination: Pagination, status?: string, sort?: string) {
+  findAll(search: string, pagination: Pagination, status?: string, sort?: string, typeSort?: string) {
     const condition: any = {};
     if (search) condition.name = { name: { [Op.like]: `%${search.trim()}%` } };
     if (status) condition.status = status;
 
-    return this.gameTypeRepository.findAll(condition, { sort, offset: pagination.offset, limit: pagination.limit });
+    return this.gameTypeRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });
   }
 
   findOne(id: number) {

@@ -31,10 +31,6 @@ export class GameController {
     type: String,
   })
   @ApiQuery({
-    name: 'sort',
-    type: String,
-  })
-  @ApiQuery({
     name: 'typeSort',
     type: String,
   })

@@ -27,17 +27,13 @@ export class GameTypeController {
     type: String,
   })
   @ApiQuery({
-    name: 'sort',
-    type: String,
-  })
-  @ApiQuery({
     name: 'status',
     type: String,
   })
   @ApiOperationCustom('Game Type', 'Get')
-  findAll(@Req() req: any, @Query('status') status: string, @Query('search') search: string, @Query('sort') sort: string) {
+  findAll(@Req() req: any, @Query('status') status: string, @Query('search') search: string, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
-    return this.gameTypeService.findAll(search, pagination, status, sort);
+    return this.gameTypeService.findAll(search, pagination, status, sort, typeSort);
   }
 
   @Get(':id')

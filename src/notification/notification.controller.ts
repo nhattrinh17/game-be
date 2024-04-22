@@ -26,14 +26,6 @@ export class NotificationController {
     description: 'Thời gian lớn nhất của thông báo',
     type: Date,
   })
-  @ApiQuery({
-    name: 'sort',
-    type: String,
-  })
-  @ApiQuery({
-    name: 'typeSort',
-    type: String,
-  })
   @ApiOperationCustom('Notification', 'Get')
   findAll(@Req() req: any, @Query('type') type: string, @Query('maxTimePublish') maxTimePublish: string, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     return this.notificationService.findAll(type, maxTimePublish, req['pagination'], sort, typeSort);

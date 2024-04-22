@@ -45,13 +45,13 @@ export class PaymentService {
     return paymentCreate;
   }
 
-  findAll(search: string, pagination: Pagination, paymentTypeId: number, sort?: string) {
+  findAll(search: string, pagination: Pagination, paymentTypeId: number, sort?: string, typeSort?: string) {
     const condition: any = {
       name: { name: { [Op.like]: `%${search.trim()}%` } },
     };
     if (paymentTypeId) condition.paymentTypeId = paymentTypeId;
 
-    return this.paymentRepository.findAll(condition, { sort, offset: pagination.offset, limit: pagination.limit });
+    return this.paymentRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });
   }
 
   async findOne(id: number) {

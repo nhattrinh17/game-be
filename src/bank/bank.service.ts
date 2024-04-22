@@ -19,12 +19,12 @@ export class BankService {
     return this.bankRepository.create(dto);
   }
 
-  findAll(search: string, pagination: Pagination, sort?: string) {
+  findAll(search: string, pagination: Pagination, sort?: string, typeSort?: string) {
     const condition: any = {
       name: { name: { [Op.like]: `%${search.trim()}%` } },
     };
 
-    return this.bankRepository.findAll(condition, { sort, offset: pagination.offset, limit: pagination.limit });
+    return this.bankRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });
   }
 
   findOne(id: number) {

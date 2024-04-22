@@ -23,11 +23,11 @@ export class PaymentTypeService {
     return this.payment_type_repository.create({ ...dto, slug });
   }
 
-  findAll(search: string, pagination: Pagination, sort?: string, status?: string) {
+  findAll(search: string, pagination: Pagination, sort?: string, status?: string, typeSort?: string) {
     const filter: any = {};
     if (search) filter.name = { [Op.like]: `%${search}%` };
     if (status) filter.status = status;
-    return this.payment_type_repository.findAll(filter, { ...pagination, sort, projection: ['id', 'name', 'status', 'minimum', 'maximum'] });
+    return this.payment_type_repository.findAll(filter, { ...pagination, typeSort, sort, projection: ['id', 'name', 'status', 'minimum', 'maximum'] });
   }
 
   findOne(id: number) {

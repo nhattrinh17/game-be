@@ -30,14 +30,10 @@ export class PaymentController {
     name: 'paymentTypeId',
     type: String,
   })
-  @ApiQuery({
-    name: 'sort',
-    type: String,
-  })
   @ApiOperationCustom('Payment', 'GET')
-  findAll(@Req() req: any, @Query('search') search: string, @Query('paymentTypeId') paymentTypeId: string, @Query('sort') sort: string) {
+  findAll(@Req() req: any, @Query('search') search: string, @Query('paymentTypeId') paymentTypeId: string, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
-    return this.paymentService.findAll(search, pagination, +paymentTypeId, sort);
+    return this.paymentService.findAll(search, pagination, +paymentTypeId, sort, typeSort);
   }
 
   @Get(':id')

@@ -25,7 +25,6 @@ export abstract class BaseRepositoryAbstract<T extends Model> implements BaseRep
   }
 
   async findAll(condition: WhereOptions<T>, options?: any): Promise<FindAllResponse<T>> {
-    console.log('🚀 ~ BaseRepositoryAbstract<T ~ findAll ~ options:', options);
     const [count, items] = await Promise.all([
       //
       this.model.count({ where: condition }),

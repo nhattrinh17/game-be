@@ -30,14 +30,10 @@ export class BankController {
     name: 'status',
     type: String,
   })
-  @ApiQuery({
-    name: 'sort',
-    type: String,
-  })
   @ApiOperationCustom('Bank', 'GET')
-  findAll(@Req() req: any, @Query('search') search: string, @Query('sort') sort: string) {
+  findAll(@Req() req: any, @Query('search') search: string, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
-    return this.bankService.findAll(search, pagination, sort);
+    return this.bankService.findAll(search, pagination, sort, typeSort);
   }
 
   @Get(':id')

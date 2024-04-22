@@ -23,10 +23,6 @@ export class GamePointController {
   @Get()
   @BaseFilter()
   @ApiQuery({
-    name: 'sort',
-    type: String,
-  })
-  @ApiQuery({
     name: 'typeSort',
     type: String,
   })

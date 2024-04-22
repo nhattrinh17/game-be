@@ -26,11 +26,6 @@ export class GroupController {
     name: 'status',
     description: 'Trạng thái account',
   })
-  @ApiQuery({
-    name: 'sort',
-    description: 'Trạng thái account',
-  })
-  @BaseFilter()
   @ApiOperationCustom('Group', 'Get')
   findAll(@Req() req, @Query('search') search: string, @Query('status') status: string, @Query('sort') sort: string) {
     return this.groupService.findAll(req['pagination'], search, status, sort);

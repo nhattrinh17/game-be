@@ -17,19 +17,18 @@ export function BaseFilter() {
       example: 10,
       description: 'Số bản ghi trên 1 trang, ví dụ: 10, 25, 50, 100, ...',
     }),
-    // ApiQuery({
-    //   name: 'search',
-    //   type: 'string',
-    //   required: false,
-    //   description: 'Tìm kiếm theo name sử dụng Mongo Regex search',
-    // }),
-    // ApiQuery({
-    //   name: 'startDate',
-    //   type: 'string',
-    //   required: false,
-    //   example: moment().subtract(1, 'month').format('YYYY-MM-DD'),
-    //   description: 'Ngày bắt đầu khi tìm kiếm trong khoảng thời gian, định dạng YYYY-MM-DD',
-    // }),
+    ApiQuery({
+      name: 'sort',
+      type: 'string',
+      required: false,
+      description: 'Sắp xếp theo trường dữ liệu, ví dụ: createdAt, updatedAt, ...',
+    }),
+    ApiQuery({
+      name: 'typeSort',
+      type: 'string',
+      required: false,
+      description: 'Kiểu sắp xếp, ví dụ: ASC, DESC, ...',
+    }),
     // ApiQuery({
     //   name: 'endDate',
     //   type: 'string',
