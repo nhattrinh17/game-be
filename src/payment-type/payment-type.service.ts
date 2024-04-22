@@ -27,7 +27,7 @@ export class PaymentTypeService {
     const filter: any = {};
     if (search) filter.name = { [Op.like]: `%${search}%` };
     if (status) filter.status = status;
-    return this.payment_type_repository.findAll(filter, { ...pagination, typeSort, sort, projection: ['id', 'name', 'status', 'minimum', 'maximum'] });
+    return this.payment_type_repository.findAll(filter, { ...pagination, typeSort, sort, projection: ['id', 'name', 'status', 'slug', 'minimum', 'maximum'] });
   }
 
   findOne(id: number) {
