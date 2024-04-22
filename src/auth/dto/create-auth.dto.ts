@@ -14,6 +14,9 @@ export class LoginDto {
 
   @ApiProperty({ name: 'BBOSID', description: 'BBOSID' })
   BBOSID: string;
+
+  @ApiProperty({ name: 'isRemember', description: 'isRemember' })
+  isRemember: string;
 }
 
 export class RefreshTokenDto {
