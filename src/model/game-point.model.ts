@@ -15,6 +15,9 @@ export class GamePointModel extends Model {
   name: string;
 
   @Column({ type: DataType.STRING })
+  slug: string;
+
+  @Column({ type: DataType.STRING })
   desc: string;
 
   @Column({ type: DataType.INTEGER })

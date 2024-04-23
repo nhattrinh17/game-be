@@ -4,6 +4,7 @@ import { UpdateGamePointDto } from './dto/update-game-point.dto';
 import { GamePointRepositoryInterface } from './interface/game-point.interface';
 import { messageResponse } from 'src/constants';
 import { Pagination } from 'src/middlewares';
+import { generateSlug } from 'src/utils';
 
 @Injectable()
 export class GamePointService {
@@ -12,8 +13,11 @@ export class GamePointService {
     private readonly gamePointRepository: GamePointRepositoryInterface,
   ) {}
 
-  create(dto: CreateGamePointDto) {
+  async create(dto: CreateGamePointDto) {
     if (!dto.name || dto.type == undefined) throw new Error(messageResponse.system.missingData);
+    const slug = generateSlug(dto.name);
+    const checkExit = await this.gamePointRepository.count({ slug });
+    if (checkExit) throw new Error(messageResponse.system.duplicateData);
     return this.gamePointRepository.create(dto);
   }
 
