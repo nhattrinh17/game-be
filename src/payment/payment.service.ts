@@ -47,7 +47,7 @@ export class PaymentService {
 
   findAll(search: string, pagination: Pagination, paymentTypeId: number, sort?: string, typeSort?: string) {
     const condition: any = {
-      name: { [Op.like]: `%${search.trim()}%` },
+      methodName: { [Op.like]: `%${search.trim()}%` },
     };
     if (paymentTypeId) condition.paymentTypeId = paymentTypeId;
 
