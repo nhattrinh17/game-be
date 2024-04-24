@@ -6,6 +6,8 @@ import { UserService } from 'src/user/user.service';
 import { GamePointService } from 'src/game-point/game-point.service';
 import { messageResponse } from 'src/constants';
 import { Sequelize } from 'sequelize-typescript';
+import { RedisService } from 'src/cache/redis.service';
+import { GamePointModel } from 'src/model';
 
 @Injectable()
 export class UserPointService {
@@ -14,6 +16,7 @@ export class UserPointService {
     private readonly userService: UserService,
     private readonly gamePointService: GamePointService,
     private readonly sequelize: Sequelize,
+    private readonly cacheService: RedisService,
   ) {}
 
   async addPointToMainPoint(dto: AddPointToMainPointDto) {
@@ -27,12 +30,34 @@ export class UserPointService {
     return result;
   }
 
-  findAll() {
-    return `This action returns all userPoint`;
+  async findAll(userId: string) {
+    const keyRedis = `data-game-point`;
+    let allGamePoint: GamePointModel[] = null;
+    const dataRedis = await this.cacheService.get(keyRedis);
+    if (dataRedis) {
+      allGamePoint = JSON.parse(dataRedis);
+    } else {
+      const dataDb = await this.gamePointService.findAll({ limit: 1000, offset: 0, page: 1 }, 'id', 'ASC');
+      allGamePoint = dataDb.data;
+      this.cacheService.set(keyRedis, JSON.stringify(allGamePoint));
+    }
+    const dataPoint = await Promise.all(allGamePoint.map((item) => this.userPointRepository.findOneByCondition({ gamePointId: item.id, userId }, ['points'])));
+    const dataRes = allGamePoint.map((gamePoint, index) => {
+      return {
+        gamePointId: gamePoint.id,
+        points: dataPoint[index] || 0,
+      };
+    });
+    return dataRes;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userPoint`;
+  async findByGame(slug: string) {
+    const { idGameSlug, idMain } = await this.gamePointService.findOneBySlugAndMain(slug);
+    const [pointMain, pointGame] = await Promise.all([this.userPointRepository.findOneById(idMain, ['points']), this.userPointRepository.findOneById(idGameSlug, ['points'])]);
+    return {
+      main: pointMain.points,
+      game: pointGame.points,
+    };
   }
 
   async updatePoint(dto: MovePointToGameOtherDto) {

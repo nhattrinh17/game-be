@@ -12,9 +12,11 @@ export class BankController {
 
   @Post()
   @ApiOperationCustom('Bank', 'post')
-  async create(@Body() createBankDto: CreateBankDto) {
+  async create(@Req() req: any, @Body() createBankDto: CreateBankDto) {
     try {
-      return await this.bankService.create(createBankDto);
+      const user = req['user'];
+      const userId = user?.id;
+      return await this.bankService.create(createBankDto, userId);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -30,10 +32,17 @@ export class BankController {
     name: 'status',
     type: String,
   })
+  @ApiQuery({
+    name: 'isForUser',
+    type: Number,
+    enum: [0, 1],
+  })
   @ApiOperationCustom('Bank', 'GET')
-  findAll(@Req() req: any, @Query('search') search: string, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
+  findAll(@Req() req: any, @Query('search') search: string, @Query('isForUser') isForUser: number, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
-    return this.bankService.findAll(search, pagination, sort, typeSort);
+    const user = req['user'];
+    const userId = user?.id;
+    return this.bankService.findAll(search, isForUser, userId, pagination, sort, typeSort);
   }
 
   @Get(':id')

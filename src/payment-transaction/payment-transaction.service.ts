@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dto';
-import { UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
+import { AddReceiptDto, UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
 import { PaymentTransactionRepositoryInterface } from './interfaces/payment-transaction.interface';
 import { StatusPaymentTranSaction, TypePaymentTranSaction, messageResponse } from 'src/constants';
 import { Pagination } from 'src/middlewares';
@@ -86,6 +86,14 @@ export class PaymentTransactionService {
         points: update.point,
       });
     }
+    return update;
+  }
+
+  async addReceiptPaymentTransaction(id: number, dto: AddReceiptDto) {
+    const transactionById = await this.paymentTransactionRepository.findOneById(id);
+    if (transactionById.status != StatusPaymentTranSaction.processing) throw new Error(messageResponse.paymentTransaction.transactionHasUpdate);
+    const update = await this.paymentTransactionRepository.findByIdAndUpdate(id, { receipt: dto.receipt });
+    if (!update) throw Error(messageResponse.system.badRequest);
     return update;
   }
 

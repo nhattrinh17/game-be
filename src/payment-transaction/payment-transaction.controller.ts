@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { PaymentTransactionService } from './payment-transaction.service';
 import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dto';
-import { UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
+import { AddReceiptDto, UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
@@ -54,6 +54,16 @@ export class PaymentTransactionController {
   async update(@Param('id') id: string, @Body() dto: UpdateStatusPaymentTransactionDto) {
     try {
       return await this.paymentTransactionService.update(+id, dto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Patch(':id/receipt')
+  @ApiOperationCustom('Payment transaction (thêm biên lai) ', 'patch')
+  async addReceipt(@Param('id') id: string, @Body() dto: AddReceiptDto) {
+    try {
+      return await this.paymentTransactionService.addReceiptPaymentTransaction(+id, dto);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

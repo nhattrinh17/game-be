@@ -23,11 +23,19 @@ export class GamePointService {
 
   findAll(pagination: Pagination, sort?: string, typeSort?: string) {
     const filter: any = {};
-    return this.gamePointRepository.findAll(filter, { ...pagination, sort, typeSort, projection: ['id', 'name', 'desc', 'type', 'group'] });
+    return this.gamePointRepository.findAll(filter, { ...pagination, sort, typeSort, projection: ['id', 'name', 'slug', 'desc', 'type', 'group'] });
   }
 
   findOne(id: number) {
     return this.gamePointRepository.findOneById(id, ['id', 'name', 'desc', 'type', 'group']);
+  }
+
+  async findOneBySlugAndMain(slug: string) {
+    const [main, gameSlug] = await Promise.all([this.gamePointRepository.findOneByCondition({ slug: 'tk-chinh' }, ['id']), this.gamePointRepository.findOneByCondition({ slug }, ['id'])]);
+    return {
+      idMain: main.id,
+      idGameSlug: gameSlug.id,
+    };
   }
 
   checkExit(id: number) {

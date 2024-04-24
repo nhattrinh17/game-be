@@ -18,6 +18,9 @@ export class PaymentTypeModel extends Model {
   @Column({ type: DataType.STRING })
   slug: string;
 
+  @Column({ type: DataType.STRING })
+  image: string;
+
   @Column({ type: DataType.INTEGER })
   minimum: number;
 

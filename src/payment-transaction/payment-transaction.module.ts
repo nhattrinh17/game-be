@@ -8,6 +8,7 @@ import { UserPointModule } from 'src/user-point/user-point.module';
 import { UserPointService } from 'src/user-point/user-point.service';
 import { UserModule } from 'src/user/user.module';
 import { GamePointModule } from 'src/game-point/game-point.module';
+import { RedisService } from 'src/cache/redis.service';
 
 @Module({
   imports: [SequelizeModule.forFeature([PaymentTransactionModel]), UserPointModule, UserModule, GamePointModule],
@@ -19,6 +20,7 @@ import { GamePointModule } from 'src/game-point/game-point.module';
       useClass: PaymentTransactionRepository,
     },
     UserPointService,
+    RedisService,
   ],
 })
 export class PaymentTransactionModule {}

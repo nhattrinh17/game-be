@@ -15,4 +15,7 @@ export class CreateBankDto {
 
   @ApiProperty({ name: 'accountNumber', description: 'Số tài khoản', type: String })
   accountNumber: string;
+
+  @ApiProperty({ name: 'isForUser', description: 'Số tài khoản chỉ thêm cho cá nhân', type: Number, enum: [0, 1] })
+  isForUser: number;
 }

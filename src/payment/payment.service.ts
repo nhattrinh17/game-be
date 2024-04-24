@@ -22,7 +22,7 @@ export class PaymentService {
   ) {}
 
   async create(dto: CreatePaymentDto) {
-    if (!dto.paymentTypeId || !dto.methodImage || !dto.methodName || !dto.type) throw Error(messageResponse.system.missingData);
+    if (!dto.paymentTypeId || !dto.methodImage || !dto.type) throw Error(messageResponse.system.missingData);
     if ((dto.type == TypePayment.showPopup && !dto.imagePopup) || (dto.type == TypePayment.showMessage && !dto.message)) throw Error(messageResponse.system.dataInvalid);
     const checkPaymentType = await this.paymentTypeService.checkExit(dto.paymentTypeId);
     if (!checkPaymentType) throw Error(messageResponse.payment.paymentTypeIdNotFound);

@@ -44,7 +44,7 @@ export class GroupService {
 
   async update(id: number, dto: UpdateGroupDto) {
     const groupById = await this.findOne(id);
-    if (!groupById) throw new HttpException(messageResponse.blog.notFound, HttpStatus.BAD_REQUEST);
+    if (!groupById) throw new HttpException(messageResponse.system.notFound, HttpStatus.BAD_REQUEST);
     if (groupById.name != dto.name) {
       const checkExit = await this.groupModel.findOne({ where: { name: dto.name } });
       if (checkExit) throw new HttpException(messageResponse.group.duplicate, HttpStatus.BAD_REQUEST);
@@ -54,7 +54,7 @@ export class GroupService {
 
   async remove(id: number) {
     const group = await this.findOne(id);
-    if (!group) throw new HttpException(messageResponse.blog.notFound, HttpStatus.BAD_REQUEST);
+    if (!group) throw new HttpException(messageResponse.system.notFound, HttpStatus.BAD_REQUEST);
     const dataUpdate = { isDeleted: true, deletedAt: new Date() };
     return this.groupModel.update(dataUpdate, { where: { id } });
   }

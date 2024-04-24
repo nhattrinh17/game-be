@@ -11,3 +11,8 @@ export class UpdateStatusPaymentTransactionDto {
   @ApiProperty({ name: 'notificationId', description: 'Id thông báo', type: Number })
   notificationId?: number;
 }
+
+export class AddReceiptDto {
+  @ApiProperty({ name: 'receipt', description: 'Ảnh biên lai', type: String })
+  receipt: string;
+}

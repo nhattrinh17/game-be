@@ -1,7 +1,7 @@
-import { BeforeCount, BeforeFind, Column, Model, Table } from 'sequelize-typescript';
+import { BeforeCount, BeforeFind, BelongsTo, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { DataType } from 'sequelize-typescript';
 import { Status } from 'src/constants';
-import { addConditionNotDelete } from '.';
+import { UserModel, addConditionNotDelete } from '.';
 
 @Table({
   tableName: 'Banks',
@@ -26,6 +26,13 @@ export class BanksModel extends Model {
 
   @Column({ type: DataType.STRING })
   accountNumber: string;
+
+  @ForeignKey(() => UserModel)
+  @Column
+  userId: number;
+
+  @BelongsTo(() => UserModel)
+  user: UserModel;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDeleted: boolean;

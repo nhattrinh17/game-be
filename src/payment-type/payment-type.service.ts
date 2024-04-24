@@ -27,11 +27,11 @@ export class PaymentTypeService {
     const filter: any = {};
     if (search) filter.name = { [Op.like]: `%${search}%` };
     if (status) filter.status = status;
-    return this.payment_type_repository.findAll(filter, { ...pagination, typeSort, sort, projection: ['id', 'name', 'status', 'slug', 'minimum', 'maximum'] });
+    return this.payment_type_repository.findAll(filter, { ...pagination, typeSort, sort, projection: ['id', 'name', 'status', 'slug', 'minimum', 'maximum', 'image'] });
   }
 
   findOne(id: number) {
-    return this.payment_type_repository.findOneById(id, ['id', 'name', 'status', 'minimum', 'maximum']);
+    return this.payment_type_repository.findOneById(id, ['id', 'name', 'status', 'minimum', 'maximum', 'image']);
   }
 
   checkExit(id: number) {
