@@ -25,7 +25,7 @@ export class PaymentModel extends Model {
   @Column({ type: DataType.STRING })
   methodName: string;
 
-  @Column({ type: DataType.STRING })
+  @Column({ type: DataType.TEXT })
   methodImage: string;
 
   @Column({ type: DataType.STRING })

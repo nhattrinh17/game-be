@@ -45,10 +45,9 @@ export class PaymentService {
     return paymentCreate;
   }
 
-  findAll(search: string, pagination: Pagination, paymentTypeId: number, sort?: string, typeSort?: string) {
-    const condition: any = {
-      methodName: { [Op.like]: `%${search.trim()}%` },
-    };
+  findAll(pagination: Pagination, paymentTypeId: number, sort?: string, typeSort?: string) {
+    console.log('🚀 ~ PaymentService ~ findAll ~ paymentTypeId:', paymentTypeId);
+    const condition: any = {};
     if (paymentTypeId) condition.paymentTypeId = paymentTypeId;
 
     return this.paymentRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });

@@ -23,7 +23,7 @@ export class NotificationModel extends Model {
   @Column({ type: DataType.STRING })
   kind: string;
 
-  @Column({ type: DataType.STRING })
+  @Column({ type: DataType.TEXT })
   content: string;
 
   @Column({ type: DataType.DATE })

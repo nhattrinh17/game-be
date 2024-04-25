@@ -18,7 +18,7 @@ export class PaymentTypeModel extends Model {
   @Column({ type: DataType.STRING })
   slug: string;
 
-  @Column({ type: DataType.STRING })
+  @Column({ type: DataType.TEXT })
   image: string;
 
   @Column({ type: DataType.INTEGER })

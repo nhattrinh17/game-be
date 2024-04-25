@@ -46,7 +46,7 @@ export class PaymentTransactionModel extends Model {
   @Column({ type: DataType.STRING })
   qrCode: string;
 
-  @Column({ type: DataType.INTEGER })
+  @Column({ type: DataType.TEXT })
   type: number;
 
   @Column({ type: DataType.INTEGER })
