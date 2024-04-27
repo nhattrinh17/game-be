@@ -20,6 +20,7 @@ import { BanksModel } from 'src/model';
       provide: 'BankRepositoryInterface',
       useClass: BankRepository,
     },
+    BankService,
   ],
 })
 export class BankModule {}

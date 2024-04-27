@@ -2,10 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dto';
 import { AddReceiptDto, UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
 import { PaymentTransactionRepositoryInterface } from './interfaces/payment-transaction.interface';
-import { StatusPaymentTranSaction, TypePaymentTranSaction, messageResponse } from 'src/constants';
+import { StatusPaymentTranSaction, TypePayment, TypePaymentTranSaction, messageResponse } from 'src/constants';
 import { Pagination } from 'src/middlewares';
 import { BanksModel, UserModel } from 'src/model';
 import { UserPointService } from 'src/user-point/user-point.service';
+import { PaymentService } from 'src/payment/payment.service';
+import { BankService } from 'src/bank/bank.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class PaymentTransactionService {
@@ -13,14 +16,33 @@ export class PaymentTransactionService {
     @Inject('PaymentTransactionRepositoryInterface')
     private readonly paymentTransactionRepository: PaymentTransactionRepositoryInterface,
     private readonly userPointService: UserPointService,
+    private readonly paymentService: PaymentService,
+    private readonly bankService: BankService,
+    private readonly userService: UserService,
   ) {}
 
-  create(dto: CreatePaymentTransactionDto) {
-    if (!dto.userId || !dto.bankReceiveId || !dto.bankReceiveId || dto.type == undefined || !dto.point) throw new Error(messageResponse.system.missingData);
+  async create(dto: CreatePaymentTransactionDto) {
+    if (!dto.userId || dto.type == undefined || !dto.point) throw new Error(messageResponse.system.missingData);
+    // if(dto.type == TypePaymentTranSaction.deposit) throw new Error(messageResponse.system.missingData);
+
+    const payment = await this.paymentService.findOne(dto.paymentId);
+    if (dto.type == TypePaymentTranSaction.deposit && payment.type == TypePayment.showPopup) {
+      let bank: BanksModel = null;
+      if (dto.bankReceiveId) {
+        bank = await this.bankService.findOne(dto.bankReceiveId);
+      } else {
+        const banks: BanksModel[] = await this.paymentService.getPaymentBankByPaymentId(dto.paymentId);
+        bank = banks[Math.floor(Math.random() * banks.length)];
+        dto.bankReceiveId = bank.id;
+      }
+      const userById = await this.userService.findOne(dto.userId);
+      const qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username}`;
+      return this.paymentTransactionRepository.create({ ...dto, qrCode });
+    }
     return this.paymentTransactionRepository.create(dto);
   }
 
-  findAll(pagination: Pagination, userId: number, type: string, status: number, sort?: string, typeSort?: string) {
+  findAll(pagination: Pagination, userId: number, type: number, status: number, sort?: string, typeSort?: string) {
     const condition: any = {};
     if (userId) condition.userId = userId;
     if (status) condition.status = status;

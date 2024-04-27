@@ -26,5 +26,16 @@ import { PaymentBankRepository } from './repository/paymentBank.repository';
     PaymentTypeService,
     BankService,
   ],
+  exports: [
+    PaymentService,
+    {
+      provide: 'PaymentRepositoryInterface',
+      useClass: PaymentRepository,
+    },
+    {
+      provide: 'PaymentBankRepositoryInterface',
+      useClass: PaymentBankRepository,
+    },
+  ],
 })
 export class PaymentModule {}

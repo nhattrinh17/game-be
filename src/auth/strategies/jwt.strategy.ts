@@ -7,13 +7,16 @@ import { RedisService } from '../../cache/redis.service';
 
 interface JwtPayload {
   email: string;
-  id: string;
+  id: number;
   tenantId: string;
 }
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private userService: UserService, private readonly cacheService: RedisService) {
+  constructor(
+    private userService: UserService,
+    private readonly cacheService: RedisService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,

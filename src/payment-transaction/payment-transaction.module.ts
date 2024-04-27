@@ -9,9 +9,19 @@ import { UserPointService } from 'src/user-point/user-point.service';
 import { UserModule } from 'src/user/user.module';
 import { GamePointModule } from 'src/game-point/game-point.module';
 import { RedisService } from 'src/cache/redis.service';
+import { PaymentModule } from 'src/payment/payment.module';
+import { BankModule } from 'src/bank/bank.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([PaymentTransactionModel]), UserPointModule, UserModule, GamePointModule],
+  imports: [
+    //
+    SequelizeModule.forFeature([PaymentTransactionModel]),
+    UserPointModule,
+    UserModule,
+    GamePointModule,
+    PaymentModule,
+    BankModule,
+  ],
   controllers: [PaymentTransactionController],
   providers: [
     PaymentTransactionService,

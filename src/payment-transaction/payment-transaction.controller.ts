@@ -34,7 +34,7 @@ export class PaymentTransactionController {
     type: Number,
   })
   @ApiOperationCustom('Payment transaction ', 'GET')
-  findAll(@Req() req: any, @Query('userId') userId: string, @Query('type') type: string, @Query('status') status: number, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
+  findAll(@Req() req: any, @Query('userId') userId: string, @Query('type') type: number, @Query('status') status: number, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
     return this.paymentTransactionService.findAll(pagination, +userId, type, status, sort, typeSort);
   }

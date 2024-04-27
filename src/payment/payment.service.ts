@@ -53,12 +53,16 @@ export class PaymentService {
     return this.paymentRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });
   }
 
+  getPaymentBankByPaymentId(id: number) {
+    return this.paymentBankRepository.findAllDataBankByPaymentId(id);
+  }
+
   async findOne(id: number) {
     const paymentById = await this.paymentRepository.findOneById(id);
     if (!paymentById) throw Error(messageResponse.system.idInvalid);
     const paymentBank = await this.paymentBankRepository.findAllDataBankByPaymentId(id);
     return {
-      ...paymentById,
+      ...paymentById.toJSON(),
       banks: paymentBank,
     };
   }
