@@ -33,14 +33,14 @@ export class PaymentTransactionModel extends Model {
   @Column
   bankTransferId: number;
 
-  @BelongsTo(() => BanksModel)
+  @BelongsTo(() => BanksModel, { foreignKey: 'bankTransferId', as: 'bankTransfer' })
   bankTransfer: BanksModel;
 
   @ForeignKey(() => BanksModel)
   @Column
   bankReceiveId: number;
 
-  @BelongsTo(() => BanksModel)
+  @BelongsTo(() => BanksModel, { foreignKey: 'bankReceiveId', as: 'bankReceive' })
   bankReceive: BanksModel;
 
   @Column({ type: DataType.STRING })

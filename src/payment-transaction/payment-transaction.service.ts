@@ -25,19 +25,21 @@ export class PaymentTransactionService {
     if (!dto.userId || dto.type == undefined || !dto.point) throw new Error(messageResponse.system.missingData);
     // if(dto.type == TypePaymentTranSaction.deposit) throw new Error(messageResponse.system.missingData);
 
-    const payment = await this.paymentService.findOne(dto.paymentId);
-    if (dto.type == TypePaymentTranSaction.deposit && payment.type == TypePayment.showPopup) {
-      let bank: BanksModel = null;
-      if (dto.bankReceiveId) {
-        bank = await this.bankService.findOne(dto.bankReceiveId);
-      } else {
-        const banks: BanksModel[] = await this.paymentService.getPaymentBankByPaymentId(dto.paymentId);
-        bank = banks[Math.floor(Math.random() * banks.length)];
-        dto.bankReceiveId = bank.id;
+    if (dto.type == TypePaymentTranSaction.deposit) {
+      const payment = await this.paymentService.findOne(dto.paymentId);
+      if (payment.type == TypePayment.showPopup) {
+        let bank: BanksModel = null;
+        if (dto.bankReceiveId) {
+          bank = await this.bankService.findOne(dto.bankReceiveId);
+        } else {
+          const banks: BanksModel[] = await this.paymentService.getPaymentBankByPaymentId(dto.paymentId);
+          bank = banks[Math.floor(Math.random() * banks.length)];
+          dto.bankReceiveId = bank.id;
+        }
+        const userById = await this.userService.findOne(dto.userId);
+        const qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username}`;
+        return this.paymentTransactionRepository.create({ ...dto, qrCode });
       }
-      const userById = await this.userService.findOne(dto.userId);
-      const qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username}`;
-      return this.paymentTransactionRepository.create({ ...dto, qrCode });
     }
     return this.paymentTransactionRepository.create(dto);
   }
@@ -53,6 +55,7 @@ export class PaymentTransactionService {
       typeSort,
       offset: pagination.offset,
       limit: pagination.limit,
+      page: pagination.page,
       include: [
         {
           model: UserModel,
@@ -61,12 +64,12 @@ export class PaymentTransactionService {
         },
         {
           model: BanksModel,
-          as: 'bankTransfer',
+          as: 'bankReceive',
           attributes: ['id', 'nameBank', 'accountOwner'],
         },
         {
           model: BanksModel,
-          as: 'bankReceive',
+          as: 'bankTransfer',
           attributes: ['id', 'nameBank', 'accountOwner'],
         },
       ],
@@ -104,6 +107,12 @@ export class PaymentTransactionService {
     if (!update) throw Error(messageResponse.system.badRequest);
     if (update.type == TypePaymentTranSaction.deposit && update.status == StatusPaymentTranSaction.success) {
       await this.userPointService.addPointToMainPoint({
+        userId: update.userId,
+        points: update.point,
+      });
+    }
+    if (update.type == TypePaymentTranSaction.withdrawMoney && update.status == StatusPaymentTranSaction.success) {
+      await this.userPointService.subtractPointToMainPoint({
         userId: update.userId,
         points: update.point,
       });

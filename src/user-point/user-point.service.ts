@@ -30,6 +30,18 @@ export class UserPointService {
     return result;
   }
 
+  async subtractPointToMainPoint(dto: AddPointToMainPointDto) {
+    if (!dto.userId) throw new Error(messageResponse.system.missingData);
+    const checkDto = await this.userService.checkExist(dto.userId);
+    if (!checkDto) throw new Error(messageResponse.system.notFound);
+    const result = await this.sequelize.query(`CALL subtract_money_from_main(:userIdParam, :pointsToSubtract, @resultMessage)`, {
+      replacements: { userIdParam: dto.userId, pointsToSubtract: dto.points },
+      type: 'RAW',
+    });
+    console.log('🚀 ~ UserPointService ~ result ~ result:', result);
+    return result;
+  }
+
   async findAll(userId: string) {
     const keyRedis = `data-game-point`;
     let allGamePoint: GamePointModel[] = null;

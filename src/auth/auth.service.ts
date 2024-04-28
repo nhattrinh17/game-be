@@ -76,7 +76,7 @@ export class AuthService {
     dto.password = atob(dto.password);
     const user = await this.userModel.findOne({
       where: {
-        [Op.or]: [{ username: dto.account }, { email: dto.account }],
+        [Op.or]: [{ username: dto.account.toLocaleUpperCase() }, { email: dto.account }],
       },
     });
 
