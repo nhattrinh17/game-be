@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'be',
+      name: 'game-be-main',
       script: 'dist/main.js',
       // autorestart: true,
       // watch: ['dist'],
