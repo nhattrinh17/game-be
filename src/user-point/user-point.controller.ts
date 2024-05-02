@@ -17,10 +17,12 @@ export class UserPointController {
     return this.userPointService.findAll(userId);
   }
 
-  @Get(':slug')
+  @Get('game/:slug')
   @ApiOperationCustom('User Point Slug', 'get', true, true)
-  findOne(@Param('slug') slug: string) {
-    return this.userPointService.findByGame(slug);
+  findOne(@Req() req: any, @Param('slug') slug: string) {
+    const user = req['user'];
+    const userId = user?.id;
+    return this.userPointService.findByGame(userId, slug);
   }
 
   @Post('')

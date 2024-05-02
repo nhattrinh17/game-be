@@ -63,12 +63,12 @@ export class UserPointService {
     return dataRes;
   }
 
-  async findByGame(slug: string) {
+  async findByGame(userId: number, slug: string) {
     const { idGameSlug, idMain } = await this.gamePointService.findOneBySlugAndMain(slug);
-    const [pointMain, pointGame] = await Promise.all([this.userPointRepository.findOneById(idMain, ['points']), this.userPointRepository.findOneById(idGameSlug, ['points'])]);
+    const [pointMain, pointGame] = await Promise.all([this.userPointRepository.findOneByCondition({ gamePointId: idMain, userId }, ['points']), this.userPointRepository.findOneByCondition({ gamePointId: idGameSlug, userId }, ['points'])]);
     return {
-      main: pointMain.points,
-      game: pointGame.points,
+      mainPoint: pointMain.points,
+      gamePoint: pointGame.points,
     };
   }
 
