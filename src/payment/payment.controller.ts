@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { AddOrRemoveBankInPayment, UpdatePaymentDto } from './dto/update-payment.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 
@@ -34,6 +34,18 @@ export class PaymentController {
   findAll(@Req() req: any, @Query('paymentTypeId') paymentTypeId: string, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
     return this.paymentService.findAll(pagination, +paymentTypeId, sort, typeSort);
+  }
+
+  @Get(':id/bank')
+  @ApiOperationCustom('Payment bank', 'get')
+  findAllBank(@Param('id') id: string) {
+    return this.paymentService.getPaymentBankByPaymentId(+id);
+  }
+
+  @Post(':id/bank')
+  @ApiOperationCustom('Payment bank', 'post')
+  addBanksToPayment(@Param('id') id: number, @Body() dto: AddOrRemoveBankInPayment) {
+    return this.paymentService.addBank(id, dto);
   }
 
   @Get(':id')

@@ -50,7 +50,7 @@ export class PaymentService {
     const condition: any = {};
     if (paymentTypeId) condition.paymentTypeId = paymentTypeId;
 
-    return this.paymentRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });
+    return this.paymentRepository.findAll(condition, { page: pagination.page, sort, typeSort, offset: pagination.offset, limit: pagination.limit, projection: ['id', 'methodName', 'methodImage', 'nameWarning', 'status', 'type', 'imagePopup', 'message', 'showAccount'] });
   }
 
   getPaymentBankByPaymentId(id: number) {
