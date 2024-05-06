@@ -9,6 +9,7 @@ import { UserPointService } from 'src/user-point/user-point.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { BankService } from 'src/bank/bank.service';
 import { UserService } from 'src/user/user.service';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class PaymentTransactionService {
@@ -44,11 +45,49 @@ export class PaymentTransactionService {
     return this.paymentTransactionRepository.create(dto);
   }
 
-  findAll(pagination: Pagination, userId: number, type: number, status: number, sort?: string, typeSort?: string) {
+  async getTotalDepositWithDraw(dateFrom: Date, dateTo: Date) {
+    if (dateFrom || dateTo) {
+      if (!dateFrom) {
+        const dateToNumber = new Date(dateTo).getTime();
+        dateFrom = new Date(dateToNumber - 1000 * 60 * 60 * 24 * 7);
+      } else if (!dateTo) {
+        const dateFromNumber = new Date(dateFrom).getTime();
+        dateTo = new Date(dateFromNumber - 1000 * 60 * 60 * 24 * 7);
+      }
+
+      const condition = {
+        createdAt: {
+          [Op.lt]: dateTo,
+          [Op.gt]: dateFrom,
+        },
+        status: StatusPaymentTranSaction.success,
+      };
+      const data = await this.paymentTransactionRepository.getTotalDepositsAndWithDraw(condition);
+      return { data };
+    } else {
+      return null;
+    }
+  }
+
+  findAll(pagination: Pagination, userId: number, type: number, status: number, dateFrom: Date, dateTo: Date, sort?: string, typeSort?: string) {
     const condition: any = {};
     if (userId) condition.userId = userId;
     if (status) condition.status = status;
     if (type) condition.type = type;
+    if (dateFrom || dateTo) {
+      if (!dateFrom) {
+        const dateToNumber = new Date(dateTo).getTime();
+        dateFrom = new Date(dateToNumber - 1000 * 60 * 60 * 24 * 7);
+      } else if (dateTo) {
+        const dateFromNumber = new Date(dateFrom).getTime();
+        dateTo = new Date(dateFromNumber - 1000 * 60 * 60 * 24 * 7);
+      }
+
+      condition.createdAt = {
+        [Op.lt]: dateTo,
+        [Op.gt]: dateFrom,
+      };
+    }
 
     return this.paymentTransactionRepository.findAll(condition, {
       sort,

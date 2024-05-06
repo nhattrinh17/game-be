@@ -33,10 +33,31 @@ export class PaymentTransactionController {
     name: 'status',
     type: Number,
   })
+  @ApiQuery({
+    name: 'dateFrom',
+    type: Date,
+  })
+  @ApiQuery({
+    name: 'dateTo',
+    type: Date,
+  })
   @ApiOperationCustom('Payment transaction ', 'GET')
-  findAll(@Req() req: any, @Query('userId') userId: string, @Query('type') type: number, @Query('status') status: number, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
+  findAll(@Req() req: any, @Query('userId') userId: string, @Query('type') type: number, @Query('status') status: number, @Query('dateFrom') dateFrom: Date, @Query('dateTo') dateTo: Date, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
-    return this.paymentTransactionService.findAll(pagination, +userId, type, status, sort, typeSort);
+    return this.paymentTransactionService.findAll(pagination, +userId, type, status, dateFrom, dateTo, sort, typeSort);
+  }
+
+  @Get('brief')
+  @ApiQuery({
+    name: 'dateFrom',
+    type: Date,
+  })
+  @ApiQuery({
+    name: 'dateTo',
+    type: Date,
+  })
+  findDataBrief(@Query('dateFrom') dateFrom: Date, @Query('dateTo') dateTo: Date) {
+    return this.paymentTransactionService.getTotalDepositWithDraw(dateFrom, dateTo);
   }
 
   @Get(':id')
