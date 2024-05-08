@@ -52,7 +52,7 @@ export class PaymentTransactionService {
         dateFrom = new Date(dateToNumber - 1000 * 60 * 60 * 24 * 7);
       } else if (!dateTo) {
         const dateFromNumber = new Date(dateFrom).getTime();
-        dateTo = new Date(dateFromNumber - 1000 * 60 * 60 * 24 * 7);
+        dateTo = new Date(dateFromNumber + 1000 * 60 * 60 * 24 * 7);
       }
 
       const condition = {
@@ -74,13 +74,14 @@ export class PaymentTransactionService {
     if (userId) condition.userId = userId;
     if (status) condition.status = status;
     if (type) condition.type = type;
+    // console.log('🛫🛫🛫 ~ file: payment-transaction.service.ts:78 ~ findAll ~ dateFrom || dateTo:', dateFrom, dateTo);
     if (dateFrom || dateTo) {
       if (!dateFrom) {
         const dateToNumber = new Date(dateTo).getTime();
         dateFrom = new Date(dateToNumber - 1000 * 60 * 60 * 24 * 7);
-      } else if (dateTo) {
+      } else if (!dateTo) {
         const dateFromNumber = new Date(dateFrom).getTime();
-        dateTo = new Date(dateFromNumber - 1000 * 60 * 60 * 24 * 7);
+        dateTo = new Date(dateFromNumber + 1000 * 60 * 60 * 24 * 7);
       }
 
       condition.createdAt = {
@@ -88,6 +89,7 @@ export class PaymentTransactionService {
         [Op.gt]: dateFrom,
       };
     }
+    // console.log('🛫🛫🛫 ~ file: payment-transaction.service.ts:87 ~ findAll ~ condition:', condition);
 
     return this.paymentTransactionRepository.findAll(condition, {
       sort,
