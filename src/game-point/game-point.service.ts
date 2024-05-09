@@ -18,12 +18,12 @@ export class GamePointService {
     const slug = generateSlug(dto.name);
     const checkExit = await this.gamePointRepository.count({ slug });
     if (checkExit) throw new Error(messageResponse.system.duplicateData);
-    return this.gamePointRepository.create(dto);
+    return this.gamePointRepository.create({ ...dto, slug });
   }
 
-  findAll(pagination: Pagination, sort?: string, typeSort?: string) {
+  findAll(pagination: Pagination, sort?: string, typeSort?: string, projection?: string[]) {
     const filter: any = {};
-    return this.gamePointRepository.findAll(filter, { ...pagination, sort, typeSort, projection: ['id', 'name', 'slug', 'desc', 'type', 'group'] });
+    return this.gamePointRepository.findAll(filter, { ...pagination, sort, typeSort, projection: projection.length || ['id', 'name', 'slug', 'desc', 'type', 'group'] });
   }
 
   findOne(id: number) {

@@ -49,7 +49,7 @@ export class UserPointService {
     if (dataRedis) {
       allGamePoint = JSON.parse(dataRedis);
     } else {
-      const dataDb = await this.gamePointService.findAll({ limit: 1000, offset: 0, page: 1 }, 'id', 'ASC');
+      const dataDb = await this.gamePointService.findAll({ limit: 1000, offset: 0, page: 1 }, 'id', 'ASC', ['id', 'slug']);
       allGamePoint = dataDb.data;
       this.cacheService.set(keyRedis, JSON.stringify(allGamePoint));
     }
@@ -57,7 +57,8 @@ export class UserPointService {
     const dataRes = allGamePoint.map((gamePoint, index) => {
       return {
         gamePointId: gamePoint.id,
-        points: dataPoint[index] || 0,
+        gameSlug: gamePoint.slug,
+        points: dataPoint[index]?.points || 0,
       };
     });
     return dataRes;
