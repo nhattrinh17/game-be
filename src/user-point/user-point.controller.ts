@@ -45,8 +45,11 @@ export class UserPointController {
 
   @Post('')
   @ApiOperationCustom('User Point', 'POST')
-  async updatePoint(@Body() dto: MovePointToGameOtherDto) {
+  async updatePoint(@Req() req: any, @Body() dto: MovePointToGameOtherDto) {
     try {
+      const user = req['user'];
+      const userId = user?.id;
+      dto.userId = userId;
       return await this.userPointService.updatePoint(dto);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

@@ -80,7 +80,6 @@ export class UserPointService {
           [Op.gt]: dateFrom,
         };
       }
-      console.log('🚀 ~ UserPointService ~ findAllHistoryTransfer ~ filter:', filter);
       return this.historyTransPointRepository.findAll(filter, {
         ...pagination,
         sort,
