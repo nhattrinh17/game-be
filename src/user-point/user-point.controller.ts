@@ -28,11 +28,15 @@ export class UserPointController {
     name: 'dateTo',
     type: Date,
   })
+  @ApiQuery({
+    name: 'gameReceiverId',
+    type: Number,
+  })
   @ApiOperationCustom('User History transfer', 'get')
-  findAllHistoryTrans(@Req() req: any, @Query('dateFrom') dateFrom: string, @Query('dateTo') dateTo: string) {
+  findAllHistoryTrans(@Req() req: any, @Query('dateFrom') dateFrom: string, @Query('dateTo') dateTo: string, @Query('gameReceiverId') gameReceiverId: number) {
     const user = req['user'];
     const userId = user?.id;
-    return this.userPointService.findAllHistoryTransfer(req['pagination'], userId, dateFrom, dateTo);
+    return this.userPointService.findAllHistoryTransfer(req['pagination'], userId, dateFrom, dateTo, gameReceiverId);
   }
 
   @Get('game/:slug')
