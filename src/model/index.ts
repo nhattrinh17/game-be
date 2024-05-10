@@ -15,6 +15,7 @@ export * from './notification.model';
 export * from './game-point.model';
 export * from './game.model';
 export * from './user-point.model';
+export * from './history-transfer-point.model';
 
 export const addConditionNotDelete = (options: any) => {
   if (!options.where) {

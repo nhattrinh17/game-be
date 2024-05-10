@@ -8,11 +8,15 @@ import { messageResponse } from 'src/constants';
 import { Sequelize } from 'sequelize-typescript';
 import { RedisService } from 'src/cache/redis.service';
 import { GamePointModel } from 'src/model';
+import { HistoryTransferPointInterface } from './interface/history-transfer-point.interface';
+import { Op } from 'sequelize';
+import { Pagination } from 'src/middlewares';
 
 @Injectable()
 export class UserPointService {
   constructor(
     @Inject('UserPointRepositoryInterface') private userPointRepository: UserPointRepositoryInterface,
+    @Inject('HistoryTransferPointInterface') private historyTransPointRepository: HistoryTransferPointInterface,
     private readonly userService: UserService,
     private readonly gamePointService: GamePointService,
     private readonly sequelize: Sequelize,
@@ -49,7 +53,7 @@ export class UserPointService {
     if (dataRedis) {
       allGamePoint = JSON.parse(dataRedis);
     } else {
-      const dataDb = await this.gamePointService.findAll({ limit: 1000, offset: 0, page: 1 }, 'id', 'ASC', ['id', 'slug']);
+      const dataDb = await this.gamePointService.findAll({ limit: 1000, offset: 0, page: 1 }, 'id', 'ASC', ['id', 'slug', 'name']);
       allGamePoint = dataDb.data;
       this.cacheService.set(keyRedis, JSON.stringify(allGamePoint));
     }
@@ -58,10 +62,45 @@ export class UserPointService {
       return {
         gamePointId: gamePoint.id,
         gameSlug: gamePoint.slug,
+        gameName: gamePoint.name,
         points: dataPoint[index]?.points || 0,
       };
     });
     return dataRes;
+  }
+
+  async findAllHistoryTransfer(pagination: Pagination, userId: number, dateFrom: string, dateTo: string, sort?: string, typeSort?: string, projection?: string[]) {
+    if (userId) {
+      const filter: any = {
+        userId: userId,
+      };
+      if (dateFrom && dateTo) {
+        filter.createdAt = {
+          [Op.lt]: dateTo,
+          [Op.gt]: dateFrom,
+        };
+      }
+      console.log('🚀 ~ UserPointService ~ findAllHistoryTransfer ~ filter:', filter);
+      return this.historyTransPointRepository.findAll(filter, {
+        ...pagination,
+        sort,
+        typeSort,
+        projection: projection?.length ? projection : ['createdAt', 'pointTrans', 'surplus', 'status'],
+        include: [
+          {
+            model: GamePointModel,
+            as: 'gameTransfer', // Sử dụng alias cho mối quan hệ
+            attributes: ['name'],
+          },
+          {
+            model: GamePointModel,
+            as: 'gameReceiver', // Sử dụng alias cho mối quan hệ
+            attributes: ['name'],
+          },
+        ],
+      });
+    }
+    return null;
   }
 
   async findByGame(userId: number, slug: string) {
@@ -74,14 +113,20 @@ export class UserPointService {
   }
 
   async updatePoint(dto: MovePointToGameOtherDto) {
-    if (!dto.userId) throw new Error(messageResponse.system.missingData);
-    const checkDto = await Promise.all([this.userService.checkExist(dto.userId), this.gamePointService.checkExit(dto.gamePointTransfer), this.gamePointService.checkExit(dto.gamePointReceive)]);
-    if (checkDto.includes(0)) throw new Error(messageResponse.system.notFound);
-    const result = await this.sequelize.query(`CALL move_money_to_other_game(:userIdParam, :gamePointTransfer, :gamePointReceive, :pointsToTransfer)`, {
-      replacements: { userIdParam: dto.userId, gamePointTransfer: dto.gamePointTransfer, gamePointReceive: dto.gamePointReceive, pointsToTransfer: dto.points },
-      type: 'RAW',
-    });
-    return 'Move point successfully';
+    try {
+      if (!dto.userId) throw new Error(messageResponse.system.missingData);
+      const checkDto = await Promise.all([this.userService.checkExist(dto.userId), this.gamePointService.checkExit(dto.gamePointTransfer), this.gamePointService.checkExit(dto.gamePointReceive)]);
+      if (checkDto.includes(0)) throw new Error(messageResponse.system.notFound);
+      const result = await this.sequelize.query(`CALL move_money_to_other_game(:userIdParam, :gamePointTransfer, :gamePointReceive, :pointsToTransfer)`, {
+        replacements: { userIdParam: dto.userId, gamePointTransfer: dto.gamePointTransfer, gamePointReceive: dto.gamePointReceive, pointsToTransfer: dto.points },
+        type: 'RAW',
+      });
+      console.log('🚀 ~ UserPointService ~ result ~ result:', result);
+
+      return 'Move point successfully';
+    } catch (error) {
+      throw error.message;
+    }
   }
 
   remove(id: number) {

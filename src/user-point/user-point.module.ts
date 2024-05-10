@@ -8,9 +8,11 @@ import { UserModule } from 'src/user/user.module';
 import { GamePointModule } from 'src/game-point/game-point.module';
 import { GamePointService } from 'src/game-point/game-point.service';
 import { RedisService } from 'src/cache/redis.service';
+import { HistoryTransferPointModel } from 'src/model/history-transfer-point.model';
+import { HistoryTransferPointRepository } from './repository/history-transfer-point.repository';
 
 @Module({
-  imports: [SequelizeModule.forFeature([UserPointModel, UserModel]), UserModule, GamePointModule],
+  imports: [SequelizeModule.forFeature([UserPointModel, UserModel, HistoryTransferPointModel]), UserModule, GamePointModule],
   controllers: [UserPointController],
   providers: [
     UserPointService,
@@ -18,13 +20,22 @@ import { RedisService } from 'src/cache/redis.service';
       provide: 'UserPointRepositoryInterface',
       useClass: UserPointRepository,
     },
-    GamePointService,
+    {
+      provide: 'HistoryTransferPointInterface',
+      useClass: HistoryTransferPointRepository,
+    },
     RedisService,
+    GamePointService,
   ],
   exports: [
+    UserPointService,
     {
       provide: 'UserPointRepositoryInterface',
       useClass: UserPointRepository,
+    },
+    {
+      provide: 'HistoryTransferPointInterface',
+      useClass: HistoryTransferPointRepository,
     },
   ],
 })

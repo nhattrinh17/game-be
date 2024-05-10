@@ -5,7 +5,10 @@ import { addConditionNotDelete } from '.';
 @Table({
   tableName: 'GamePoints',
   timestamps: true,
-  indexes: [{ name: 'type_index', fields: ['type'] }],
+  indexes: [
+    { name: 'type_index', fields: ['type'] },
+    { name: 'slug_index', fields: ['slug'] },
+  ],
 })
 export class GamePointModel extends Model {
   @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
