@@ -41,6 +41,11 @@ export class PaymentTransactionService {
         const qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username}`;
         return this.paymentTransactionRepository.create({ ...dto, qrCode });
       }
+    } else {
+      await this.userPointService.subtractPointToMainPoint({
+        userId: dto.userId,
+        points: dto.point,
+      });
     }
     return this.paymentTransactionRepository.create(dto);
   }
@@ -152,12 +157,12 @@ export class PaymentTransactionService {
         points: update.point,
       });
     }
-    if (update.type == TypePaymentTranSaction.withdrawMoney && update.status == StatusPaymentTranSaction.success) {
-      await this.userPointService.subtractPointToMainPoint({
-        userId: update.userId,
-        points: update.point,
-      });
-    }
+    // if (update.type == TypePaymentTranSaction.withdrawMoney && update.status == StatusPaymentTranSaction.success) {
+    //   await this.userPointService.subtractPointToMainPoint({
+    //     userId: update.userId,
+    //     points: update.point,
+    //   });
+    // }
     return update;
   }
 
