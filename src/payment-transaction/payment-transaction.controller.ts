@@ -11,9 +11,12 @@ export class PaymentTransactionController {
   constructor(private readonly paymentTransactionService: PaymentTransactionService) {}
 
   @Post()
-  async create(@Body() createPaymentTransactionDto: CreatePaymentTransactionDto) {
+  async create(@Req() req: any, @Body() dto: CreatePaymentTransactionDto) {
     try {
-      return await this.paymentTransactionService.create(createPaymentTransactionDto);
+      const user = req['user'];
+      const userId = user?.id;
+      dto.userId = userId;
+      return await this.paymentTransactionService.create(dto);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

@@ -20,6 +20,9 @@ export class CreatePaymentTransactionDto {
   @ApiProperty({ name: 'type', description: 'Loại giao dịch(nạp or rút)', type: Number })
   type: number;
 
+  @ApiProperty({ name: 'content', description: 'Loại giao dịch(nạp or rút)', type: Number })
+  content: string;
+
   @ApiProperty({ name: 'qrCode', description: 'Qr code khi thanh toán', type: Number })
   qrCode?: number;
 

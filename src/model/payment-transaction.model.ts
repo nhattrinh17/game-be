@@ -56,6 +56,9 @@ export class PaymentTransactionModel extends Model {
   status: number;
 
   @Column({ type: DataType.STRING })
+  content: string;
+
+  @Column({ type: DataType.STRING })
   receipt: string;
 
   @Column({ type: DataType.STRING })
