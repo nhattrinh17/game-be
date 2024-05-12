@@ -58,7 +58,7 @@ export class PaymentTransactionModel extends Model {
   @Column({ type: DataType.STRING })
   content: string;
 
-  @Column({ type: DataType.STRING })
+  @Column({ type: DataType.TEXT })
   receipt: string;
 
   @Column({ type: DataType.STRING })

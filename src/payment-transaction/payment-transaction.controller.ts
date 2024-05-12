@@ -22,7 +22,7 @@ export class PaymentTransactionController {
     }
   }
 
-  @Get()
+  @Get('cms')
   @BaseFilter()
   @ApiQuery({
     name: 'userId',
@@ -47,6 +47,31 @@ export class PaymentTransactionController {
   @ApiOperationCustom('Payment transaction ', 'GET')
   findAll(@Req() req: any, @Query('userId') userId: string, @Query('type') type: number, @Query('status') status: number, @Query('dateFrom') dateFrom: Date, @Query('dateTo') dateTo: Date, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
+    return this.paymentTransactionService.findAll(pagination, +userId, type, status, dateFrom, dateTo, sort, typeSort);
+  }
+
+  @Get('')
+  @ApiQuery({
+    name: 'type',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'status',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'dateFrom',
+    type: Date,
+  })
+  @ApiQuery({
+    name: 'dateTo',
+    type: Date,
+  })
+  @ApiOperationCustom('Payment transaction ', 'GET')
+  findAllForUser(@Req() req: any, @Query('type') type: number, @Query('status') status: number, @Query('dateFrom') dateFrom: Date, @Query('dateTo') dateTo: Date, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
+    const pagination = req['pagination'];
+    const userId = req['user']?.id;
+    if (!userId) return null;
     return this.paymentTransactionService.findAll(pagination, +userId, type, status, dateFrom, dateTo, sort, typeSort);
   }
 

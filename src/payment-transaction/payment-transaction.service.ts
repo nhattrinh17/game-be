@@ -77,7 +77,15 @@ export class PaymentTransactionService {
   findAll(pagination: Pagination, userId: number, type: number, status: number, dateFrom: Date, dateTo: Date, sort?: string, typeSort?: string) {
     const condition: any = {};
     if (userId) condition.userId = userId;
-    if (status) condition.status = status;
+    if (status) {
+      if (status == 3) {
+        condition.status = {
+          [Op.ne]: StatusPaymentTranSaction.success,
+        };
+      } else {
+        condition.status = status;
+      }
+    }
     if (type) condition.type = type;
     // console.log('🛫🛫🛫 ~ file: payment-transaction.service.ts:78 ~ findAll ~ dateFrom || dateTo:', dateFrom, dateTo);
     if (dateFrom || dateTo) {
@@ -111,7 +119,7 @@ export class PaymentTransactionService {
         {
           model: BanksModel,
           as: 'bankReceive',
-          attributes: ['id', 'nameBank', 'accountOwner'],
+          attributes: ['id', 'nameBank', 'accountOwner', 'accountNumber'],
         },
         {
           model: BanksModel,
