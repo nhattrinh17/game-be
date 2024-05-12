@@ -14,7 +14,7 @@ export class BankService {
   ) {}
 
   async create(dto: CreateBankDto, userId: number) {
-    if (!dto.accountNumber || !dto.binBank || !dto.accountOwner || !dto.branch || !dto.nameBank) throw Error(messageResponse.system.missingData);
+    if (!dto.accountNumber || !dto.binBank || !dto.accountOwner || !dto.nameBank) throw Error(messageResponse.system.missingData);
     if (!binBanks[dto.binBank]) throw new Error(messageResponse.system.badRequest);
     const dataInsert = dto.isForUser ? { ...dto, userId } : dto;
     if (dto.isForUser) {
