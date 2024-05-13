@@ -3,11 +3,12 @@ import { Pagination } from 'src/middlewares';
 import { UserModel } from 'src/model';
 import { Helper } from 'src/utils';
 import { CreateUserDto, SendCodeSmsSto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, updateUserWithCms } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 import { SmsTwilioService } from 'src/utils/sendSmsTwilio.service';
 import { RedisService } from 'src/cache/redis.service';
+import { messageResponse } from 'src/constants';
 
 @Injectable()
 export class UserService {
@@ -68,7 +69,7 @@ export class UserService {
       order: [sort ? [sort, 'DESC'] : ['id', 'DESC']],
       offset: pagination.offset,
       limit: pagination.limit,
-      attributes: ['id', 'email', 'username', 'name', 'phone', 'status', 'avatar'],
+      attributes: ['id', 'email', 'username', 'name', 'phone', 'status', 'typeUser', 'avatar'],
     });
     const [countDocument, data] = await Promise.all([promise1, promise2]);
     return {
@@ -85,9 +86,11 @@ export class UserService {
     return this.userModel.count({ where: { id } });
   }
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
+  async updateUserCms(id: number, dto: updateUserWithCms) {
+    const checkUser = await this.findOne(id);
+    if (!checkUser) throw new Error(messageResponse.system.idInvalid);
+    return checkUser.update(dto);
+  }
 
   remove(id: number) {
     return `This action removes a #${id} user`;

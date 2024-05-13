@@ -48,6 +48,12 @@ export class PaymentController {
     return this.paymentService.addBank(id, dto);
   }
 
+  @Delete(':id/bank/:idBank')
+  @ApiOperationCustom('Payment bank', 'post')
+  deleteBanksToPayment(@Param('id') id: number, @Param('idBank') idBank: number) {
+    return this.paymentService.deleteBank(id, idBank);
+  }
+
   @Get(':id')
   @ApiOperationCustom('Payment', 'get', true, true)
   async findOne(@Param('id') id: string) {

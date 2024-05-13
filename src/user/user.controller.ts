@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, SendCodeSmsSto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, updateUserWithCms } from './dto/update-user.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
 import { Public } from 'src/auth/decorators';
@@ -53,10 +53,10 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(+id, updateUserDto);
-  // }
+  @Patch('cms/:id')
+  update(@Param('id') id: string, @Body() dto: updateUserWithCms) {
+    return this.userService.updateUserCms(+id, dto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

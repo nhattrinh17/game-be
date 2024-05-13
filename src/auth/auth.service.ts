@@ -6,7 +6,7 @@ import { ConfirmAccountDto } from './dto/update-auth.dto';
 import { LoginDto, RefreshTokenDto } from './dto/create-auth.dto';
 import { Helper } from 'src/utils';
 import { JwtService } from '@nestjs/jwt';
-import { TypeUser, messageResponse } from 'src/constants';
+import { Status, TypeUser, messageResponse } from 'src/constants';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { UserService } from 'src/user/user.service';
@@ -74,18 +74,19 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     dto.password = atob(dto.password);
-    const user = await this.userModel.findOne({
+    let user = await this.userModel.findOne({
       where: {
         [Op.or]: [{ username: dto.account.toLocaleUpperCase() }, { email: dto.account }],
       },
     });
 
     if (!user) {
-      throw new HttpException(messageResponse.auth.userNotFound, HttpStatus.BAD_REQUEST);
+      // throw new HttpException(messageResponse.auth.userNotFound, HttpStatus.BAD_REQUEST);
       // const dataAccountKu = await this.kuApiService.CheckAccountKu(dto.account, dto.password, dto.BBOSID);
       // if (!dataAccountKu) throw new HttpException(messageResponse.auth.userNotFound, HttpStatus.BAD_REQUEST);
-      // user = await this.userService.create({ username: dto.account, name: dataAccountKu.NickName, password: dto.password, phone: new Date().getTime().toString() });
+      user = await this.userService.create({ username: dto.account, name: dto.account, password: dto.password, phone: new Date().getTime().toString() });
     } else {
+      if (user.status == Status.Inactive) throw new HttpException(messageResponse.auth.userHasBlocked, HttpStatus.BAD_REQUEST);
       const checkPass = await this.helper.verifyHash(user.password, dto.password);
       if (!checkPass) throw new HttpException(messageResponse.auth.password_wrong, HttpStatus.BAD_REQUEST);
     }

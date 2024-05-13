@@ -12,6 +12,7 @@ export const messageResponse = {
   auth: {
     userNotFound: 'user_not_found',
     password_wrong: 'password_wrong',
+    userHasBlocked: 'user_has_blocked',
   },
   group: {
     notFound: 'group_not_found',

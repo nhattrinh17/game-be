@@ -56,4 +56,8 @@ export class BankService {
     if (!softDelete) throw Error(messageResponse.system.badRequest);
     return softDelete;
   }
+
+  async permanentlyDelete(id: number) {
+    return this.bankRepository.permanentlyDelete(id);
+  }
 }

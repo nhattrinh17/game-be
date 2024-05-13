@@ -73,10 +73,10 @@ export class PaymentService {
     return update;
   }
 
-  async deleteBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
+  async deleteBank(idPayment: number, idBank: number) {
     const paymentById = await this.paymentRepository.findOneById(idPayment);
     if (!paymentById) throw Error(messageResponse.system.idInvalid);
-    await Promise.all(dto.banks.map((bank) => this.paymentBankRepository.permanentlyDeleteByCondition({ paymentId: idPayment, bankId: bank })));
+    await Promise.all([this.paymentBankRepository.permanentlyDeleteByCondition({ paymentId: idPayment, bankId: idBank }), this.bankService.permanentlyDelete(idBank)]);
   }
 
   async addBank(idPayment: number, dto: AddOrRemoveBankInPayment) {
