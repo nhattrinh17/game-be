@@ -70,6 +70,7 @@ export class UserPointService {
   }
 
   async findAllHistoryTransfer(pagination: Pagination, userId: number, dateFrom: string, dateTo: string, gameReceiverId: number, sort?: string, typeSort?: string, projection?: string[]) {
+    console.log('🚀 ~ UserPointService ~ findAllHistoryTransfer ~ dateTo:', new Date(dateTo));
     if (userId) {
       const filter: any = {
         userId: userId,
@@ -79,11 +80,11 @@ export class UserPointService {
       }
       if (dateFrom && dateTo) {
         filter.createdAt = {
-          [Op.lt]: dateTo,
           [Op.gt]: dateFrom,
+          [Op.lt]: dateTo,
         };
       }
-      console.log('🚀 ~ UserPointService ~ findAllHistoryTransfer ~ gameReceiverId:', gameReceiverId);
+      console.log('🚀 ~ UserPointService ~ findAllHistoryTransfer ~ filter:', filter);
       return this.historyTransPointRepository.findAll(filter, {
         ...pagination,
         sort,
