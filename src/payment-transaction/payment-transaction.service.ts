@@ -38,7 +38,7 @@ export class PaymentTransactionService {
           dto.bankReceiveId = bank.id;
         }
         const userById = await this.userService.findOne(dto.userId);
-        const qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username}`;
+        const qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username?.toUpperCase()}`;
         return this.paymentTransactionRepository.create({ ...dto, qrCode });
       }
     } else {
