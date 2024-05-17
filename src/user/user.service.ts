@@ -40,11 +40,11 @@ export class UserService {
 
   async create(dto: CreateUserDto, checkCode?: boolean) {
     if (+dto.phone.split('')[0] == 0) dto.phone = dto.phone.slice(1);
-    if (checkCode) {
-      const keyRedis = `create-account:code:${dto.phone}`;
-      const codeRedis = await this.cacheService.get(keyRedis);
-      if (codeRedis != dto.code) throw new Error('code_wrong');
-    }
+    // if (checkCode) {
+    //   const keyRedis = `create-account:code:${dto.phone}`;
+    //   const codeRedis = await this.cacheService.get(keyRedis);
+    //   if (codeRedis != dto.code) throw new Error('code_wrong');
+    // }
     const checkDuplicate = await this.userModel.findOne({
       where: {
         [Op.or]: [{ username: dto.username }, { phone: dto.phone }],
