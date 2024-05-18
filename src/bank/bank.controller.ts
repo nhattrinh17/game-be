@@ -45,6 +45,26 @@ export class BankController {
     return this.bankService.findAll(search, isForUser, userId, pagination, sort, typeSort);
   }
 
+  @Get('cms')
+  @BaseFilter()
+  @ApiQuery({
+    name: 'search',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'status',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'userId',
+    type: Number,
+  })
+  @ApiOperationCustom('Bank', 'GET')
+  findAllCMS(@Req() req: any, @Query('search') search: string, @Query('userId') userId: number, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
+    const pagination = req['pagination'];
+    return this.bankService.findAllBankCms(search, userId, pagination, sort, typeSort);
+  }
+
   @Get(':id')
   @ApiOperationCustom('Bank', 'GET', true, true)
   findOne(@Param('id') id: string) {

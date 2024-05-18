@@ -37,6 +37,19 @@ export class BankService {
     return this.bankRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });
   }
 
+  findAllBankCms(search: string, userId: number, pagination: Pagination, sort?: string, typeSort?: string) {
+    const condition: any = {};
+    if (userId) {
+      condition.userId = userId;
+    } else {
+      if (search) {
+        condition.name = { [Op.like]: `%${search.trim()}%` };
+      }
+    }
+
+    return this.bankRepository.findAll(condition, { sort, typeSort, offset: pagination.offset, limit: pagination.limit });
+  }
+
   findOne(id: number) {
     return this.bankRepository.findOneById(id);
   }

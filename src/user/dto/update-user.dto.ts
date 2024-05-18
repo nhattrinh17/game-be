@@ -14,4 +14,7 @@ export class updateUserWithCms {
 
   @ApiProperty({ name: 'typeUser', description: 'Loại user' })
   typeUser: string;
+
+  @ApiProperty({ name: 'password', description: 'Mât khẩu mới' })
+  password: string;
 }

@@ -124,7 +124,7 @@ export class PaymentTransactionService {
         {
           model: BanksModel,
           as: 'bankTransfer',
-          attributes: ['id', 'nameBank', 'accountOwner'],
+          attributes: ['id', 'nameBank', 'accountOwner', 'accountNumber'],
         },
       ],
     });

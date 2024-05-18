@@ -90,6 +90,9 @@ export class UserService {
   async updateUserCms(id: number, dto: updateUserWithCms) {
     const checkUser = await this.findOne(id);
     if (!checkUser) throw new Error(messageResponse.system.idInvalid);
+    if (dto.password) {
+      dto.password = await this.helper.hashString(dto.password);
+    }
     return checkUser.update(dto);
   }
 
