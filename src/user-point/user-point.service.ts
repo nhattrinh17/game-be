@@ -42,7 +42,7 @@ export class UserPointService {
       replacements: { userIdParam: dto.userId, pointsToSubtract: dto.points },
       type: 'RAW',
     });
-    console.log('🚀 ~ UserPointService ~ result ~ result:', result);
+    // console.log('🚀 ~ UserPointService ~ result ~ result:', result);
     return result;
   }
 
@@ -124,7 +124,7 @@ export class UserPointService {
         replacements: { userIdParam: dto.userId, gamePointTransfer: dto.gamePointTransfer, gamePointReceive: dto.gamePointReceive, pointsToTransfer: dto.points },
         type: 'RAW',
       });
-      console.log('🚀 ~ UserPointService ~ result ~ result:', result);
+      // console.log('🚀 ~ UserPointService ~ result ~ result:', result);
 
       return 'Move point successfully';
     } catch (error) {
