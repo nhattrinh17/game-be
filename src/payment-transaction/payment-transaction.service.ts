@@ -119,12 +119,12 @@ export class PaymentTransactionService {
         {
           model: BanksModel,
           as: 'bankReceive',
-          attributes: ['id', 'nameBank', 'accountOwner', 'accountNumber'],
+          attributes: ['id', 'binBank', 'accountOwner', 'accountNumber'],
         },
         {
           model: BanksModel,
           as: 'bankTransfer',
-          attributes: ['id', 'nameBank', 'accountOwner', 'accountNumber'],
+          attributes: ['id', 'binBank', 'accountOwner', 'accountNumber'],
         },
       ],
     });

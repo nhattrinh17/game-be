@@ -27,7 +27,7 @@ export class GamePointService {
 
   findAll(pagination: Pagination, sort?: string, typeSort?: string, projection?: string[]) {
     const filter: any = {};
-    return this.gamePointRepository.findAll(filter, { ...pagination, sort, typeSort, projection: projection.length ? projection : ['id', 'name', 'slug', 'desc', 'type', 'group'] });
+    return this.gamePointRepository.findAll(filter, { ...pagination, sort, typeSort, projection: projection?.length ? projection : ['id', 'name', 'slug', 'desc', 'type', 'group'] });
   }
 
   findOne(id: number) {
