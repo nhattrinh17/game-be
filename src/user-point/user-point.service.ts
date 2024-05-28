@@ -83,7 +83,7 @@ export class UserPointService {
           [Op.gt]: dateFrom,
         };
       }
-      console.log('🚀 ~ UserPointService ~ findAllHistoryTransfer ~ gameReceiverId:', gameReceiverId);
+      // console.log('🚀 ~ UserPointService ~ findAllHistoryTransfer ~ gameReceiverId:', gameReceiverId);
       return this.historyTransPointRepository.findAll(filter, {
         ...pagination,
         sort,
@@ -111,7 +111,7 @@ export class UserPointService {
     const [pointMain, pointGame] = await Promise.all([this.userPointRepository.findOneByCondition({ gamePointId: idMain, userId }, ['points']), this.userPointRepository.findOneByCondition({ gamePointId: idGameSlug, userId }, ['points'])]);
     return {
       mainPoint: pointMain.points,
-      gamePoint: pointGame.points,
+      gamePoint: pointGame?.points,
     };
   }
 
