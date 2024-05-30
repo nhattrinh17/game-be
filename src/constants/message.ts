@@ -13,6 +13,7 @@ export const messageResponse = {
     userNotFound: 'user_not_found',
     password_wrong: 'password_wrong',
     userHasBlocked: 'user_has_blocked',
+    cannot_access_cms: 'cannot_access_cms',
   },
   group: {
     notFound: 'group_not_found',

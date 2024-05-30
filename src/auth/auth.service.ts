@@ -103,6 +103,35 @@ export class AuthService {
     };
   }
 
+  async loginCMS(dto: LoginDto) {
+    dto.password = atob(dto.password);
+    const user = await this.userModel.findOne({
+      where: {
+        [Op.or]: [{ username: dto.account.toLocaleUpperCase() }, { email: dto.account }],
+      },
+    });
+
+    if (!user) {
+      throw new HttpException(messageResponse.auth.userNotFound, HttpStatus.BAD_REQUEST);
+    } else {
+      if (user.typeUser != TypeUser.Admin) throw new HttpException(messageResponse.auth.cannot_access_cms, HttpStatus.BAD_REQUEST);
+      if (user.status == Status.Inactive) throw new HttpException(messageResponse.auth.userHasBlocked, HttpStatus.BAD_REQUEST);
+      const checkPass = await this.helper.verifyHash(user.password, dto.password);
+      if (!checkPass) throw new HttpException(messageResponse.auth.password_wrong, HttpStatus.BAD_REQUEST);
+    }
+    const payloadAccessToken = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      status: user.status,
+      typeUser: user.typeUser,
+    };
+    return {
+      access_token: await this.generateAccessToken(payloadAccessToken, Boolean(user.typeUser == TypeUser.Admin && dto.isRemember)),
+      refresh_token: await this.generateRefreshToken({ id: user.id }),
+    };
+  }
+
   async refreshToken(dto: RefreshTokenDto) {
     try {
       const payload = await this.jwtService.verifyAsync(dto.refresh_token, {

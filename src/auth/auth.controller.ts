@@ -22,6 +22,13 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
+  @Public()
+  @Post('cms/login')
+  @ApiOperationCustom('Login', 'post')
+  loginCMS(@Body() dto: LoginDto) {
+    return this.authService.loginCMS(dto);
+  }
+
   @Get('userInfo')
   @ApiOperationCustom('Login', 'post')
   userInfo(@Req() req) {
