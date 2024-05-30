@@ -84,8 +84,12 @@ export class PaymentTransactionController {
     name: 'dateTo',
     type: Date,
   })
-  findDataBrief(@Query('dateFrom') dateFrom: Date, @Query('dateTo') dateTo: Date) {
-    return this.paymentTransactionService.getTotalDepositWithDraw(dateFrom, dateTo);
+  @ApiQuery({
+    name: 'userId',
+    type: Date,
+  })
+  findDataBrief(@Query('dateFrom') dateFrom: Date, @Query('dateTo') dateTo: Date, @Query('userId') userId: number) {
+    return this.paymentTransactionService.getTotalDepositWithDraw(dateFrom, dateTo, userId);
   }
 
   @Get(':id')

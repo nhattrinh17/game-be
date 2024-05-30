@@ -58,11 +58,12 @@ export class UserService {
     return this.userModel.create({ ...dto });
   }
 
-  async findAll(pagination: Pagination, search: string, status: string, sort?: any) {
-    console.log('🛫🛫🛫 ~ file: user.service.ts:60 ~ findAll ~ pagination:', pagination);
+  async findAll(pagination: Pagination, search: string, status: string, phone: string, sort?: any) {
     const filter: any = {};
     if (search) filter[Op.or] = [{ username: { [Op.like]: `%${search.trim()}%` } }, { name: { [Op.like]: `%${search.trim()}%` } }];
     if (status) filter.status = status;
+    if (phone) filter.phone = { [Op.like]: `%${phone.trim()}%` };
+    console.log('🚀 ~ UserService ~ findAll ~ filter:', JSON.stringify(filter));
     const promise1 = this.userModel.count({ where: filter });
     const promise2 = this.userModel.findAll({
       //

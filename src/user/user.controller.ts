@@ -44,8 +44,8 @@ export class UserController {
     description: 'Trạng thái account',
   })
   @ApiOperationCustom('User', 'Get')
-  findAll(@Req() req, @Query('search') search: string, @Query('status') status: string) {
-    return this.userService.findAll(req['pagination'], search, status);
+  findAll(@Req() req, @Query('search') search: string, @Query('status') status: string, @Query('phone') phone: string) {
+    return this.userService.findAll(req['pagination'], search, status, phone);
   }
 
   @Get(':id')

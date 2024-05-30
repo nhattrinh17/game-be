@@ -50,7 +50,7 @@ export class PaymentTransactionService {
     return this.paymentTransactionRepository.create(dto);
   }
 
-  async getTotalDepositWithDraw(dateFrom: Date, dateTo: Date) {
+  async getTotalDepositWithDraw(dateFrom: Date, dateTo: Date, userId: number) {
     if (dateFrom || dateTo) {
       if (!dateFrom) {
         const dateToNumber = new Date(dateTo).getTime();
@@ -60,13 +60,14 @@ export class PaymentTransactionService {
         dateTo = new Date(dateFromNumber + 1000 * 60 * 60 * 24 * 7);
       }
 
-      const condition = {
+      const condition: any = {
         createdAt: {
           [Op.lt]: dateTo,
           [Op.gt]: dateFrom,
         },
         status: StatusPaymentTranSaction.success,
       };
+      if (userId) condition.userId = userId;
       const data = await this.paymentTransactionRepository.getTotalDepositsAndWithDraw(condition);
       return { data };
     } else {
