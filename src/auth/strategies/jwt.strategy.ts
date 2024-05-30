@@ -25,13 +25,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    let user = JSON.parse(await this.cacheService.get(`${payload.tenantId}:${process.env.APP_ID}:${payload.id}`));
+    let user = JSON.parse(await this.cacheService.get(`${process.env.APP_ID}:${process.env.APP_NAME}:${payload.id}`));
 
     if (!user) {
       user = await this.userService.findOne(payload.id);
       if (user) {
         user = JSON.parse(JSON.stringify(user));
-        await this.cacheService.set(`${process.env.APP_ID}:${payload.id}`, JSON.stringify(user), 60 * 30);
+        await this.cacheService.set(`${process.env.APP_ID}:${process.env.APP_NAME}:${payload.id}`, JSON.stringify(user), 60 * 30);
       } else {
         return null;
       }
