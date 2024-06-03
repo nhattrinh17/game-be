@@ -31,4 +31,7 @@ export const messageResponse = {
   banks: {
     numberBanksMax: 'number_banks_max',
   },
+  giftCode: {
+    cannotUse: 'cannot_use',
+  },
 };

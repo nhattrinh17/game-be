@@ -27,8 +27,8 @@ export class UserPointService {
     if (!dto.userId) throw new Error(messageResponse.system.missingData);
     const checkDto = await this.userService.checkExist(dto.userId);
     if (!checkDto) throw new Error(messageResponse.system.notFound);
-    const result = await this.sequelize.query(`CALL add_money_to_main(:userIdParam, :pointsToAdd, @resultMessage)`, {
-      replacements: { userIdParam: dto.userId, pointsToAdd: dto.points },
+    const result = await this.sequelize.query(`CALL add_money_to_main(:userIdParam, :pointsToAdd, :description, @resultMessage)`, {
+      replacements: { userIdParam: dto.userId, pointsToAdd: dto.points, description: dto.description },
       type: 'RAW',
     });
     return result;

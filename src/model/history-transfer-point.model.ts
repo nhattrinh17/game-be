@@ -43,6 +43,9 @@ export class HistoryTransferPointModel extends Model {
   @Column({ type: DataType.INTEGER })
   status: number;
 
+  @Column({ type: DataType.STRING })
+  description: string;
+
   @Column({ type: DataType.DATE })
   createdAt: Date;
 }

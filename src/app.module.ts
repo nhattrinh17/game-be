@@ -29,6 +29,7 @@ import { PaymentTransactionModule } from './payment-transaction/payment-transact
 import { NotificationModule } from './notification/notification.module';
 import { GamePointModule } from './game-point/game-point.module';
 import { UserPointModule } from './user-point/user-point.module';
+import { GiftCodeModule } from './gift-code/gift-code.module';
 
 console.log(__dirname);
 @Module({
@@ -117,6 +118,7 @@ console.log(__dirname);
     NotificationModule,
     GamePointModule,
     UserPointModule,
+    GiftCodeModule,
   ],
   providers: [
     //

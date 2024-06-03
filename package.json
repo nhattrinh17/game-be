@@ -55,7 +55,8 @@
     "rxjs": "^7.2.0",
     "sequelize": "^6.33.0",
     "sequelize-typescript": "^2.1.5",
-    "twilio": "^4.16.0"
+    "twilio": "^4.16.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -66,6 +67,7 @@
     "@types/node": "^20.3.1",
     "@types/nodemailer": "^6.4.14",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.42.0",

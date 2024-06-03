@@ -16,6 +16,7 @@ export * from './game-point.model';
 export * from './game.model';
 export * from './user-point.model';
 export * from './history-transfer-point.model';
+export * from './gift-code.mode';
 
 export const addConditionNotDelete = (options: any) => {
   if (!options.where) {

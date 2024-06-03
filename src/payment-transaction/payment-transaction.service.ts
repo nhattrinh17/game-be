@@ -45,6 +45,7 @@ export class PaymentTransactionService {
       await this.userPointService.subtractPointToMainPoint({
         userId: dto.userId,
         points: dto.point,
+        description: 'Rút tiền về tài khoản ngân hàng',
       });
     }
     return this.paymentTransactionRepository.create(dto);
@@ -164,6 +165,7 @@ export class PaymentTransactionService {
       await this.userPointService.addPointToMainPoint({
         userId: update.userId,
         points: update.point,
+        description: 'Nạp tiền vào tài khoản chính',
       });
     }
     // if (update.type == TypePaymentTranSaction.withdrawMoney && update.status == StatusPaymentTranSaction.success) {

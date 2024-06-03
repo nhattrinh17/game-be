@@ -6,4 +6,7 @@ export class AddPointToMainPointDto {
 
   @ApiProperty({ name: 'points', description: 'Id of the game point', type: Number })
   points: number;
+
+  @ApiProperty({ name: 'desc', description: 'THông tin thêm', type: Number })
+  description: string;
 }
