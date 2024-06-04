@@ -8,3 +8,11 @@ export class UpdateGiftCodeDto {
   @ApiProperty({ name: 'userIdUse', type: Number, description: 'User nhận' })
   userIdUse: number;
 }
+
+export class SubmitGiftCodeDto {
+  @ApiProperty({ name: 'code', type: String, description: 'code' })
+  code: string;
+
+  @ApiProperty({ name: 'userIdUse', type: Number, description: 'User nhận' })
+  userIdUse: number;
+}

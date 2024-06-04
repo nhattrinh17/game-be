@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateGiftCodeDto } from './dto/create-gift-code.dto';
-import { UpdateGiftCodeDto } from './dto/update-gift-code.dto';
+import { SubmitGiftCodeDto, UpdateGiftCodeDto } from './dto/update-gift-code.dto';
 import { GiftCodeRepositoryInterface } from './interface/gift-code.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { Pagination } from 'src/middlewares';
@@ -16,6 +16,7 @@ export class GiftCodeService {
   ) {}
 
   async create(dto: CreateGiftCodeDto) {
+    console.log('🚀 ~ GiftCodeService ~ create ~ dto:', dto);
     const dataBulk = Array.from({ length: dto.totalCode }, (x) => x).map((i) => {
       const giftCode = uuidv4();
       return {
@@ -23,19 +24,21 @@ export class GiftCodeService {
         ...dto,
       };
     });
+    console.log('🚀 ~ GiftCodeService ~ dataBulk ~ dataBulk:', dataBulk);
     await this.giftCodeRepository.createBulk(dataBulk);
     return 'Create gift code successfully';
   }
 
-  findAll(status: number, pagination: Pagination, sort: string, typeSort: string) {
+  findAll(status: number, userIdUse: number, pagination: Pagination, sort: string, typeSort: string) {
     const filter: any = {};
-    if (typeof status == 'number') filter.status = status;
+    if (status >= 0) filter.status = status;
+    if (userIdUse > 0) filter.userIdUse = userIdUse;
 
     return this.giftCodeRepository.findAll(filter, {
       sort,
       typeSort,
       ...pagination,
-      projection: [],
+      projection: ['id', 'code', 'name', 'point', 'timeUse', 'status', 'createdAt'],
       include: [
         {
           model: UserModel,
@@ -59,20 +62,35 @@ export class GiftCodeService {
     const giftCode = await this.giftCodeRepository.findOneById(id);
     if (giftCode) {
       if (giftCode.status != StatusGiftCode.Created) throw new Error(messageResponse.giftCode.cannotUse);
-      if (dto.status == StatusGiftCode.Used) {
-        await this.userPointService.addPointToMainPoint({
-          description: `Nhận thưởng từ gift code ${giftCode.name}`,
-          points: giftCode.point,
-          userId: dto.userIdUse,
-        });
-        giftCode.userIdUse = dto.userIdUse;
-        giftCode.status = dto.status;
-        giftCode.timeUse = new Date();
-      }
+      // if (dto.status == StatusGiftCode.Used) {
+      //   await this.userPointService.addPointToMainPoint({
+      //     description: `Nhận thưởng từ gift code ${giftCode.name}`,
+      //     points: giftCode.point,
+      //     userId: dto.userIdUse,
+      //   });
+      //   giftCode.userIdUse = dto.userIdUse;
+      //   giftCode.status = dto.status;
+      //   giftCode.timeUse = new Date();
+      // }
       giftCode.status = dto.status;
       return giftCode.save();
     }
     throw new Error(messageResponse.system.idInvalid);
+  }
+
+  async handleGiftCodeUser(dto: SubmitGiftCodeDto) {
+    const giftCode = await this.giftCodeRepository.findOneByCondition({ code: dto.code });
+    if (!giftCode) throw new Error(messageResponse.giftCode.codeInvalid);
+    if (giftCode.status != StatusGiftCode.Created) throw new Error(messageResponse.giftCode.cannotUse);
+    await this.userPointService.addPointToMainPoint({
+      description: `Nhận thưởng từ gift code ${giftCode.name}`,
+      points: giftCode.point,
+      userId: dto.userIdUse,
+    });
+    giftCode.userIdUse = dto.userIdUse;
+    giftCode.status = StatusGiftCode.Used;
+    giftCode.timeUse = new Date();
+    return giftCode.save();
   }
 
   remove(id: number) {

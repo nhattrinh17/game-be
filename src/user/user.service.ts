@@ -63,7 +63,6 @@ export class UserService {
     if (search) filter[Op.or] = [{ username: { [Op.like]: `%${search.trim()}%` } }, { name: { [Op.like]: `%${search.trim()}%` } }];
     if (status) filter.status = status;
     if (phone) filter.phone = { [Op.like]: `%${phone.trim()}%` };
-    console.log('🚀 ~ UserService ~ findAll ~ filter:', JSON.stringify(filter));
     const promise1 = this.userModel.count({ where: filter });
     const promise2 = this.userModel.findAll({
       //

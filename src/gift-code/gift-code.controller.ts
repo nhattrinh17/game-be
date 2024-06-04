@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { GiftCodeService } from './gift-code.service';
 import { CreateGiftCodeDto } from './dto/create-gift-code.dto';
-import { UpdateGiftCodeDto } from './dto/update-gift-code.dto';
+import { SubmitGiftCodeDto, UpdateGiftCodeDto } from './dto/update-gift-code.dto';
 import { BaseFilter } from 'src/custom-decorator';
 import { ApiQuery } from '@nestjs/swagger';
 
@@ -28,7 +28,7 @@ export class GiftCodeController {
   })
   findAll(@Req() req: any, @Query('status') status: number, @Query('userIdUse') userIdUse: number, @Query('sort') sort: string, @Query('typeSort') typeSort: string) {
     const pagination = req['pagination'];
-    return this.giftCodeService.findAll(status, pagination, sort, typeSort);
+    return this.giftCodeService.findAll(status, userIdUse, pagination, sort, typeSort);
   }
 
   @Get(':id')
@@ -37,8 +37,27 @@ export class GiftCodeController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGiftCodeDto: UpdateGiftCodeDto) {
-    return this.giftCodeService.updateStatus(+id, updateGiftCodeDto);
+  async update(@Req() req: any, @Param('id') id: string, @Body() dto: UpdateGiftCodeDto) {
+    const user = req.user;
+    dto.userIdUse = user.id;
+    try {
+      const res = await this.giftCodeService.updateStatus(+id, dto);
+      return res;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('submit')
+  async submitGift(@Req() req: any, @Body() dto: SubmitGiftCodeDto) {
+    const user = req.user;
+    dto.userIdUse = user.id;
+    try {
+      const res = await this.giftCodeService.handleGiftCodeUser(dto);
+      return res;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
