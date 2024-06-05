@@ -27,6 +27,14 @@ export class UserService {
     return code == dto.code;
   }
 
+  getTotalUser(status: string) {
+    const filter: any = {};
+    if (status) filter.status = status;
+    return this.userModel.count({
+      where: filter,
+    });
+  }
+
   async sendCodeAndSaveRedis(phoneNumber: string) {
     if (+phoneNumber.split('')[0] == 0) phoneNumber = phoneNumber.slice(1);
     const keyRedis = `create-account:code:${phoneNumber}`;

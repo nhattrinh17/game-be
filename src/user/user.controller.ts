@@ -48,6 +48,16 @@ export class UserController {
     return this.userService.findAll(req['pagination'], search, status, phone);
   }
 
+  @Get('total')
+  @ApiQuery({
+    name: 'status',
+    description: 'Trạng thái account',
+  })
+  @ApiOperationCustom('User', 'Get')
+  totalUser(@Query('status') status: string) {
+    return this.userService.getTotalUser(status);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
