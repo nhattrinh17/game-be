@@ -78,7 +78,7 @@ export class UserService {
       order: [sort ? [sort, 'DESC'] : ['id', 'DESC']],
       offset: pagination.offset,
       limit: pagination.limit,
-      attributes: ['id', 'email', 'username', 'name', 'phone', 'status', 'typeUser', 'avatar'],
+      attributes: ['id', 'username', 'name', 'phone', 'status', 'typeUser', 'createdAt'],
     });
     const [countDocument, data] = await Promise.all([promise1, promise2]);
     return {

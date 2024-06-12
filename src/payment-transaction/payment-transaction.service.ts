@@ -10,6 +10,7 @@ import { PaymentService } from 'src/payment/payment.service';
 import { BankService } from 'src/bank/bank.service';
 import { UserService } from 'src/user/user.service';
 import { Op } from 'sequelize';
+import { LogTelegramService } from 'src/utils/logTelegram';
 
 @Injectable()
 export class PaymentTransactionService {
@@ -20,14 +21,37 @@ export class PaymentTransactionService {
     private readonly paymentService: PaymentService,
     private readonly bankService: BankService,
     private readonly userService: UserService,
+    private readonly logTelegramService: LogTelegramService,
   ) {}
+
+  async sendRequestPaymentTransactionTele(idPT: number, type: number, bankTransfer: number, bankReceiver: number, content?: string): Promise<any> {
+    let message = `${content}`;
+    if (type == TypePaymentTranSaction.deposit) {
+      if (bankTransfer) {
+        const user = await this.bankService.findOne(bankTransfer);
+        message += `từ số tài khoản ${user.accountNumber} `;
+      }
+      if (bankReceiver) {
+        const user = await this.bankService.findOne(bankReceiver);
+        message += `đến tài khoản ${user.accountOwner}:${user.accountNumber}`;
+      }
+      const linkConfirm = `${process.env.API_ENTRY}/payment-transaction/${idPT}/bot-telegram`;
+      message += `. Nếu đã nhận được tiền vui lòng ấn xác nhận nạp tiền qua đường link: <a href="${linkConfirm}">Click here</a>  (Hành động này sẽ KHÔNG THỂ HOÀN LẠI nếu nhầm)`;
+    } else if (type == TypePaymentTranSaction.withdrawMoney) {
+      if (bankReceiver) {
+        const user = await this.bankService.findOne(bankReceiver);
+        message += `về tài khoản ${user.accountOwner}:${user.accountNumber}. Vui lòng đăng nhập cms để xác nhận việc chuyển tiền thành công!`;
+      }
+    }
+    return this.logTelegramService.sendToTelegram(type == TypePaymentTranSaction.deposit ? 'Nạp tiền' : 'Rút tiền', message);
+  }
 
   async create(dto: CreatePaymentTransactionDto) {
     if (!dto.userId || dto.type == undefined || !dto.point) throw new Error(messageResponse.system.missingData);
-    // if(dto.type == TypePaymentTranSaction.deposit) throw new Error(messageResponse.system.missingData);
 
     if (dto.type == TypePaymentTranSaction.deposit) {
       const payment = await this.paymentService.findOne(dto.paymentId);
+      let qrCode = '';
       if (payment.type == TypePayment.showPopup) {
         let bank: BanksModel = null;
         if (dto.bankReceiveId) {
@@ -38,17 +62,24 @@ export class PaymentTransactionService {
           dto.bankReceiveId = bank.id;
         }
         const userById = await this.userService.findOne(dto.userId);
-        const qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username?.toUpperCase()}`;
-        return this.paymentTransactionRepository.create({ ...dto, qrCode });
+        qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username?.toUpperCase()}`;
       }
+      const pt = await this.paymentTransactionRepository.create({ ...dto, qrCode });
+      // Send to telegram
+      const contentBase = `Có một yêu cầu chuyển tiền mới bằng phương thức ${pt.content} `;
+      this.sendRequestPaymentTransactionTele(pt.id, dto.type, pt.bankTransferId, pt.bankReceiveId, contentBase);
+      return pt;
     } else {
       await this.userPointService.subtractPointToMainPoint({
         userId: dto.userId,
         points: dto.point,
         description: 'Rút tiền về tài khoản ngân hàng',
       });
+      const pt = await this.paymentTransactionRepository.create(dto);
+      const contentBase = 'Có một yêu cầu rút tiền ';
+      this.sendRequestPaymentTransactionTele(pt.id, dto.type, pt.bankTransferId, pt.bankReceiveId, contentBase);
+      return pt;
     }
-    return this.paymentTransactionRepository.create(dto);
   }
 
   async getTotalDepositWithDraw(dateFrom: Date, dateTo: Date, userId: number) {
@@ -156,7 +187,7 @@ export class PaymentTransactionService {
     return paymentById;
   }
 
-  async update(id: number, dto: UpdateStatusPaymentTransactionDto) {
+  async update(id: number, dto: UpdateStatusPaymentTransactionDto, isBotTelegram?: boolean) {
     const transactionById = await this.paymentTransactionRepository.findOneById(id);
     if (transactionById.status != StatusPaymentTranSaction.processing) throw new Error(messageResponse.paymentTransaction.transactionHasUpdate);
     const update = await this.paymentTransactionRepository.findByIdAndUpdate(id, dto);
@@ -165,7 +196,7 @@ export class PaymentTransactionService {
       await this.userPointService.addPointToMainPoint({
         userId: update.userId,
         points: update.point,
-        description: 'Nạp tiền vào tài khoản chính',
+        description: isBotTelegram ? 'Nạp tiền vào tài khoản chính qua bot telegram' : 'Nạp tiền vào tài khoản chính',
       });
     }
     // if (update.type == TypePaymentTranSaction.withdrawMoney && update.status == StatusPaymentTranSaction.success) {

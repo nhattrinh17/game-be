@@ -4,6 +4,7 @@ import { CreatePaymentTransactionDto } from './dto/create-payment-transaction.dt
 import { AddReceiptDto, UpdateStatusPaymentTransactionDto } from './dto/update-payment-transaction.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ApiOperationCustom, BaseFilter } from 'src/custom-decorator';
+import { Public } from 'src/auth/decorators';
 
 @ApiTags('Payment Transaction ')
 @Controller('payment-transaction')
@@ -107,6 +108,18 @@ export class PaymentTransactionController {
   async update(@Param('id') id: string, @Body() dto: UpdateStatusPaymentTransactionDto) {
     try {
       return await this.paymentTransactionService.update(+id, dto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Public()
+  @Get(':id/bot-telegram')
+  @ApiOperationCustom('Payment transaction telegram', 'patch')
+  async updateByTelegram(@Param('id') id: string) {
+    try {
+      const resBot = await this.paymentTransactionService.update(+id, { status: 1 }, true);
+      return 'Update successful. Thank!';
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

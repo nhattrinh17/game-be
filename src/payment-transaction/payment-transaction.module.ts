@@ -11,10 +11,13 @@ import { GamePointModule } from 'src/game-point/game-point.module';
 import { RedisService } from 'src/cache/redis.service';
 import { PaymentModule } from 'src/payment/payment.module';
 import { BankModule } from 'src/bank/bank.module';
+import { HttpModule } from '@nestjs/axios';
+import { LogTelegramService } from 'src/utils/logTelegram';
 
 @Module({
   imports: [
     //
+    HttpModule,
     SequelizeModule.forFeature([PaymentTransactionModel]),
     UserPointModule,
     UserModule,
@@ -29,6 +32,7 @@ import { BankModule } from 'src/bank/bank.module';
       provide: 'PaymentTransactionRepositoryInterface',
       useClass: PaymentTransactionRepository,
     },
+    LogTelegramService,
     UserPointService,
     RedisService,
   ],
