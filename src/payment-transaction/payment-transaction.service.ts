@@ -29,7 +29,7 @@ export class PaymentTransactionService {
     if (type == TypePaymentTranSaction.deposit) {
       if (bankTransfer) {
         const user = await this.bankService.findOne(bankTransfer);
-        message += `từ số tài khoản ${user.accountNumber} `;
+        message += `từ tài khoản ${user.accountOwner}:${user.accountNumber} `;
       }
       if (bankReceiver) {
         const user = await this.bankService.findOne(bankReceiver);
@@ -66,7 +66,7 @@ export class PaymentTransactionService {
       }
       const pt = await this.paymentTransactionRepository.create({ ...dto, qrCode });
       // Send to telegram
-      const contentBase = `Có một yêu cầu chuyển tiền mới bằng phương thức ${pt.content} `;
+      const contentBase = `Có một yêu cầu nạp tiền trị giá ${(dto.point * 1000).toLocaleString('vi-VN')} mới bằng phương thức ${pt.content} `;
       this.sendRequestPaymentTransactionTele(pt.id, dto.type, pt.bankTransferId, pt.bankReceiveId, contentBase);
       return pt;
     } else {

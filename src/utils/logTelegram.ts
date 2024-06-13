@@ -8,7 +8,7 @@ export class LogTelegramService {
   async sendToTelegram(title: string, desc: string) {
     try {
       // Create message
-      const message = `<pre>Title: <b>${title}</b></pre> Detail: ${desc}`;
+      const message = `<pre>Title: <b>${title}</b></pre> <b>Detail:</b> ${desc}`;
 
       //create url
       const chat_id = process.env.CHAT_BOT_ID;

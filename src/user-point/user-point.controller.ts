@@ -18,6 +18,33 @@ export class UserPointController {
     return this.userPointService.findAll(userId);
   }
 
+  @Get('cms')
+  @BaseFilter()
+  @ApiOperationCustom('User Point for cms', 'get')
+  findAllByCms(@Req() req: any, @Query('userId') userId: number) {
+    return this.userPointService.findAllUserPointCms(req['pagination'], userId);
+  }
+
+  @Get('history/cms')
+  @BaseFilter()
+  @BaseFilter()
+  @ApiQuery({
+    name: 'dateFrom',
+    type: Date,
+  })
+  @ApiQuery({
+    name: 'dateTo',
+    type: Date,
+  })
+  @ApiQuery({
+    name: 'gameReceiverId',
+    type: Number,
+  })
+  @ApiOperationCustom('User Point for cms', 'get')
+  findHistoryAllByCms(@Req() req: any, @Query('userId') userId: number, @Query('dateFrom') dateFrom: string, @Query('dateTo') dateTo: string) {
+    return this.userPointService.findAllHistoryTransfer(req['pagination'], userId, dateFrom, dateTo, undefined, ['createdAt', 'pointTrans', 'surplus', 'status', 'description']);
+  }
+
   @Get('history')
   @BaseFilter()
   @ApiQuery({

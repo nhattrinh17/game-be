@@ -7,7 +7,7 @@ import { GamePointService } from 'src/game-point/game-point.service';
 import { messageResponse } from 'src/constants';
 import { Sequelize } from 'sequelize-typescript';
 import { RedisService } from 'src/cache/redis.service';
-import { GamePointModel } from 'src/model';
+import { GamePointModel, UserModel } from 'src/model';
 import { HistoryTransferPointInterface } from './interface/history-transfer-point.interface';
 import { Op } from 'sequelize';
 import { Pagination } from 'src/middlewares';
@@ -69,7 +69,30 @@ export class UserPointService {
     return dataRes;
   }
 
-  async findAllHistoryTransfer(pagination: Pagination, userId: number, dateFrom: string, dateTo: string, gameReceiverId: number, sort?: string, typeSort?: string, projection?: string[]) {
+  findAllUserPointCms(pagination: Pagination, userId: number) {
+    const filter: any = {};
+    if (userId) {
+      filter.userId = userId;
+    }
+
+    return this.userPointRepository.findAll(filter, {
+      ...pagination,
+      include: [
+        {
+          model: UserModel,
+          as: 'user', // Sử dụng alias cho mối quan hệ
+          attributes: ['name'],
+        },
+        {
+          model: GamePointModel,
+          as: 'gamePoint', // Sử dụng alias cho mối quan hệ
+          attributes: ['name'],
+        },
+      ],
+    });
+  }
+
+  async findAllHistoryTransfer(pagination: Pagination, userId: number, dateFrom: string, dateTo: string, gameReceiverId?: number, projection?: string[], sort?: string, typeSort?: string) {
     if (userId) {
       const filter: any = {
         userId: userId,
