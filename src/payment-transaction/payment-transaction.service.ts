@@ -35,8 +35,9 @@ export class PaymentTransactionService {
         const user = await this.bankService.findOne(bankReceiver);
         message += `đến tài khoản ${user.accountOwner}:${user.accountNumber}`;
       }
-      const linkConfirm = `${process.env.API_ENTRY}/payment-transaction/${idPT}/bot-telegram`;
-      message += `. Nếu đã nhận được tiền vui lòng ấn xác nhận nạp tiền qua đường link: <a href="${linkConfirm}">Click here</a>  (Hành động này sẽ KHÔNG THỂ HOÀN LẠI nếu nhầm)`;
+      // const linkConfirm = `${process.env.API_ENTRY}/payment-transaction/${idPT}/bot-telegram`;
+      // message += `. Nếu đã nhận được tiền vui lòng ấn xác nhận nạp tiền qua đường link: <a href="${linkConfirm}">Click here</a>  (Hành động này sẽ KHÔNG THỂ HOÀN LẠI nếu nhầm)`;
+      message += 'Vui lòng đăng nhập cms để xác nhận việc nhận tiền thành công hoặc hủy yêu cầu!';
     } else if (type == TypePaymentTranSaction.withdrawMoney) {
       if (bankReceiver) {
         const user = await this.bankService.findOne(bankReceiver);
@@ -51,6 +52,7 @@ export class PaymentTransactionService {
 
     if (dto.type == TypePaymentTranSaction.deposit) {
       const payment = await this.paymentService.findOne(dto.paymentId);
+      const userById = await this.userService.findOne(dto.userId);
       let qrCode = '';
       if (payment.type == TypePayment.showPopup) {
         let bank: BanksModel = null;
@@ -61,12 +63,11 @@ export class PaymentTransactionService {
           bank = banks[Math.floor(Math.random() * banks.length)];
           dto.bankReceiveId = bank.id;
         }
-        const userById = await this.userService.findOne(dto.userId);
         qrCode = `${process.env.URL_VIETQR}/${bank.binBank}-${bank.accountNumber}-${process.env.TEMPLATE_QR}?amount=${dto.point * 1000}&addInfo=${userById.username?.toUpperCase()}`;
       }
       const pt = await this.paymentTransactionRepository.create({ ...dto, qrCode });
       // Send to telegram
-      const contentBase = `Có một yêu cầu nạp tiền trị giá ${(dto.point * 1000).toLocaleString('vi-VN')} mới bằng phương thức ${pt.content} `;
+      const contentBase = `Có một yêu cầu nạp tiền trị giá ${(dto.point * 1000).toLocaleString('vi-VN')} từ tài khoản ${userById.username?.toUpperCase()} bằng phương thức ${pt.content} `;
       this.sendRequestPaymentTransactionTele(pt.id, dto.type, pt.bankTransferId, pt.bankReceiveId, contentBase);
       return pt;
     } else {
