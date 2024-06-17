@@ -33,6 +33,7 @@ export const messageResponse = {
   },
   giftCode: {
     cannotUse: 'cannot_use',
+    giftCodeHasUse: 'gift_code_has_use',
     codeInvalid: 'gif_code_invalid',
   },
 };

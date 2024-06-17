@@ -93,7 +93,9 @@ export class GiftCodeService {
     return giftCode.save();
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const giftCodeById = await this.giftCodeRepository.findOneById(id);
+    if (giftCodeById.status == StatusGiftCode.Used) throw new Error(messageResponse.giftCode.giftCodeHasUse);
     return this.giftCodeRepository.softDelete(id);
   }
 }

@@ -19,13 +19,6 @@ export class GiftCodeModel extends Model {
   @Column({ type: DataType.STRING })
   code: string;
 
-  @ForeignKey(() => UserModel)
-  @Column
-  userIdCreate: number;
-
-  @BelongsTo(() => UserModel)
-  userCreate: UserModel;
-
   @Column({ type: DataType.INTEGER })
   point: number;
 
@@ -37,9 +30,16 @@ export class GiftCodeModel extends Model {
 
   @ForeignKey(() => UserModel)
   @Column
+  userIdCreate: number;
+
+  @BelongsTo(() => UserModel, { foreignKey: 'userIdCreate', as: 'userCreate' })
+  userCreate: UserModel;
+
+  @ForeignKey(() => UserModel)
+  @Column
   userIdUse: number;
 
-  @BelongsTo(() => UserModel)
+  @BelongsTo(() => UserModel, { foreignKey: 'userIdUse', as: 'userUse' })
   userUse: UserModel;
 
   @Column({ type: DataType.DATE })
