@@ -6,6 +6,7 @@ module.exports = {
       // autorestart: true,
       // watch: ['dist'],
       instances: 3,
+      exec_mode: "cluster",
       env: {
         NODE_ENV: 'development',
         PORT: 9990,
